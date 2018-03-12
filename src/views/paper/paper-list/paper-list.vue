@@ -1,0 +1,141 @@
+
+<!-- 商品列表 -->
+<style lang="less">
+    // @import '@/styles/common.less';
+    // @import './orderManagement.less';
+    @import '../../../styles/common.less';
+</style>
+
+<template>
+    <div>
+        <Row>
+            <Col span="24">
+                <Card>
+                    <div class="margin-bottom-10 clearfix">
+
+                        <Row class='fl margin-right-10'>
+                            <Input v-model="searchConName" icon="search" @on-click='' placeholder="..." style="width: 200px" />
+                        </Row>
+
+                    </div>
+                    <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
+                        <Table border :columns="orderColumns" :data="orderData"></Table>
+                    </Row>
+
+                    <div class="clearfix">
+
+                       <!--  <Page :total=total size="small" class='fr margin-top-20' show-elevator show-sizer show-total
+                        @on-change = 'changePage' @on-page-size-change='changePageSize' placement='top'></Page> -->
+                    </div>
+                </Card>
+            </Col>
+        </Row>
+    </div>
+</template>
+
+<script>
+export default {
+    name: 'mutative-router',
+    data () {
+        return {
+            orderColumns: [
+                {
+                    type: 'index',
+                    width: 60,
+                    align: 'center'
+                },
+                {
+                    title: '试卷标题',
+                    key: 'goodsNo',
+                    align: 'center'
+                },
+                {
+                    title: '生成时间',
+                    key: 'salePrice',
+                    align: 'center'
+                },
+
+                {
+                    title: '操作',
+                    key: 'operation',
+                    align: 'center',
+                    render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '10px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            // this.show(params.index)
+                                            this.show(params.index)
+                                        }
+                                    }
+                                }, '试卷'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.remove(params.index)
+                                        }
+                                    }
+                                }, '答案卷')
+                            ])
+                    }
+                }
+            ],
+
+            orderData: [
+                {
+                    goodsNo: '国际标准说明',
+                    brandName:'中等',
+                    salePrice: '2018-02-06',
+
+                },
+                {
+                    goodsNo: '国际标准说明',
+                    brandName:'中等',
+                    salePrice: '2018-02-06',
+
+                },
+                {
+                    goodsNo: '国际标准说明',
+                    brandName:'中等',
+                    salePrice: '2018-02-06',
+
+                },
+                {
+                    goodsNo: '国际标准说明',
+                    brandName:'中等',
+                    salePrice: '2018-02-06',
+
+                },
+
+
+            ],
+            searchConName:'',
+            model1:'',
+
+            total:0,//总页数
+            current:1,//当前页码
+            pageSize:10,//每页数量
+        };
+    },
+    computed: {
+
+    },
+    methods:{
+
+    },
+    mounted(){
+
+    }
+};
+</script>

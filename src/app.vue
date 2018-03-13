@@ -1,3 +1,6 @@
+<style lang="less">
+@import "./styles/reset.less";
+</style>
 <template>
     <div id="main" class="app-main">
         <router-view></router-view>

@@ -40,8 +40,6 @@
 						</div>
 					</div>
 					<div class="header-avator-con">
-						<lock-screen></lock-screen>
-						<message-tip v-model="mesCount"></message-tip>
 						<div class="user-dropdown-menu-con">
 							<Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
 								<Dropdown transfer trigger="click" @on-click="handleClickUserDropdown">

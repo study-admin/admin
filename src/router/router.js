@@ -85,6 +85,8 @@ export const appRouter = [
 
             { path: 'substation', title: '变电类', name: 'substation',  component: () => import('@/views/test-questions/substation/substation.vue')
             },
+            { path: 'general', title: '通用类', name: 'general',  component: () => import('@/views/test-questions/general/general.vue')
+            },
         ]
     },
     {
@@ -94,9 +96,10 @@ export const appRouter = [
         name: 'paper',
         component: Main,
         children: [
+            { path: 'paper-making', title: '试卷制定', name: 'paper-making',  component: () => import('@/views/paper/paper-making/paper-making.vue')
+            },
             { path: 'paper-list', title: '试卷列表', name: 'paper-list',  component: () => import('@/views/paper/paper-list/paper-list.vue')
             },
-
         ]
     },
 ];

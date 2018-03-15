@@ -2,7 +2,7 @@
 <!-- 试卷上传 -->
 <style lang="less">
 
-    @import '../../styles/common.less';
+    @import '../../../styles/common.less';
     .w-e-text-container{
         height: 200px !important;
     }

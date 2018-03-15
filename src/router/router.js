@@ -62,6 +62,18 @@ export const otherRouter = {
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
     {
+        path: '/paperUnload',
+        icon: 'lock-combination',
+        title: '试卷上传',
+        name: 'paperUnload',
+        component: Main,
+        children: [
+            { path: 'paper-upload', title: '试卷上传', name: 'paper-upload',  component: () => import('@/views/paper-upload/paper-upload.vue')
+            },
+
+        ]
+    },
+    {
         path: '/test-questions',
         icon: 'lock-combination',
         title: '试题分类',

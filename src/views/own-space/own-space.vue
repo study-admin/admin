@@ -216,10 +216,10 @@ export default {
             });
         },
         init () {
-            this.userForm.name = '小明';
-            this.userForm.cellphone = '17712345678';
-            this.initPhone = '17712345678';
-            this.userForm.company = '小杂粮商城';
+            this.userForm.name = 'xxx';
+            this.userForm.cellphone = '13112345678';
+            this.initPhone = '13112345678';
+            this.userForm.company = '安徽省电力';
             this.userForm.department = '技术部';
         },
         cancelInputCodeBox () {

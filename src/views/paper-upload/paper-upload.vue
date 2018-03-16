@@ -55,6 +55,8 @@ export default {
 
     },
     mounted() {
+        console.log('修改了一点')
+
         var editor = new E(this.$refs.editor)
         editor.customConfig.onchange = (html) => {
           this.editorContent = html

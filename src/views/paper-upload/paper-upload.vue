@@ -29,9 +29,10 @@
         <div class="clearfix">
             <h3 class="fl">试题答案：</h3>
             <div class="fl" style='width:650px;' v-if='model2 == "选择题"'>
-                <div class="choose">
-                    <div v-for="item in len" :key="item" :ref="'editor'+item" style="text-align:left"></div>
+                <div class="choose"  v-for="item in len" :key="item" >
+                    <div :ref="'editor'+item" style="text-align:left"></div>
                 </div>
+                <div class="add_item" @click="addItem"> 添加选项</div>
                 <div  class="clearfix">
                     <Button type="primary">确认提交</Button>
                 </div>
@@ -76,7 +77,7 @@ export default {
             //填空题
             value1:'',
             editorContent:'',//题目内容
-            len: 4,//设置默认5个富文本
+            len: 1,//设置默认5个富文本
         };
     },
     computed: {
@@ -94,6 +95,10 @@ export default {
                 o['editor'+i].customConfig.menus = ['image']
                 o['editor'+i].create()
             }
+        },
+        addItem(){
+            this.len++;
+            this.creatEditor();
         }
     },
     mounted() {
@@ -128,3 +133,15 @@ export default {
       }
 };
 </script>
+<style>
+.choose .w-e-text-container{
+    height:45px !important;
+}
+.add_item{
+    margin-top:5px;
+    text-align: center;
+    border:1px dashed #000;
+    cursor: pointer;
+}
+</style>
+

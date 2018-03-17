@@ -30,7 +30,7 @@
             <h3 class="fl">试题答案：</h3>
             <div class="fl" style='width:650px;' v-if='model2 == "选择题"'>
                 <div class="choose">
-                    <div ref="editor0" style="text-align:left"></div>
+                    <div v-for="item in len" :key="item" :ref="'editor'+item" style="text-align:left"></div>
                 </div>
                 <div  class="clearfix">
                     <Button type="primary">确认提交</Button>
@@ -76,7 +76,7 @@ export default {
             //填空题
             value1:'',
             editorContent:'',//题目内容
-            len: 5,//设置默认5个富文本
+            len: 4,//设置默认5个富文本
         };
     },
     computed: {
@@ -84,40 +84,46 @@ export default {
     },
     methods:{
         creatEditor(){
-            let arr = [];
-            for (let i = 0; i <this.len; i++) {
-                arr['editor'+i][i] = new E(this.$refs['editor'+i])
-                arr['editor'+i][i].customConfig.onchange = (html) => {
+            let o = {};
+            for (let i = 1; i <this.len+1; i++) {
+                o['editor'+i] = new E(this.$refs['editor'+i][0])
+                o['editor'+i].customConfig.onchange = (html) => {
                     this['editorContent'+i] = html
                 }
-                arr['editor'+i][i].customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-                arr['editor'+i][i].create()
+                o['editor'+i].customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
+                o['editor'+i].customConfig.menus = ['image']
+                o['editor'+i].create()
             }
-            console.log(arr);
-            
-            arr['editor0'].customConfig.menus = [
-                'head',  // 标题
-                'bold',  // 粗体
-                'fontSize',  // 字号
-                'fontName',  // 字体
-                'italic',  // 斜体
-                'underline',  // 下划线
-                'strikeThrough',  // 删除线
-                'foreColor',  // 文字颜色
-                'backColor',  // 背景颜色
-                'link',  // 插入链接
-                'list',  // 列表
-                'justify',  // 对齐方式
-                'emoticon',  // 表情
-                'image',  // 插入图片
-                'table',  // 表格
-                'undo',  // 撤销
-                'redo'  // 重复
-            ]
-            
         }
     },
     mounted() {
+        console.log(this.$refs);
+        
+        let  editor = new E(this.$refs.editor)
+        editor.customConfig.onchange = (html) => {
+            this.editorContent = html
+        }
+        editor.customConfig.menus = [
+            'head',  // 标题
+            'bold',  // 粗体
+            'fontSize',  // 字号
+            'fontName',  // 字体
+            'italic',  // 斜体
+            'underline',  // 下划线
+            'strikeThrough',  // 删除线
+            'foreColor',  // 文字颜色
+            'backColor',  // 背景颜色
+            'link',  // 插入链接
+            'list',  // 列表
+            'justify',  // 对齐方式
+            'emoticon',  // 表情
+            'image',  // 插入图片
+            'table',  // 表格
+            'undo',  // 撤销
+            'redo'  // 重复
+        ]
+        editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
+        editor.create()
         this.creatEditor();
       }
 };

@@ -1,15 +1,12 @@
 
 <!-- 试卷上传 -->
 <style lang="less">
-
     @import '../../styles/common.less';
     .w-e-text-container{
         height: 200px !important;
     }
 </style>
-
 <template>
-
     <Card>
         <div class="margin-bottom-10 clearfix">
             <h3 class="fl" style='padding-top:5px;'>试题分类：</h3>
@@ -29,6 +26,34 @@
                 <div ref="editor" style="text-align:left"></div>
             </div>
         </div>
+        <div class="clearfix">
+            <h3 class="fl">试题答案：</h3>
+            <div class="fl" style='width:650px;' v-if='model2 == "选择题"'>
+                <div class="choose">
+                    <div ref="editor0" style="text-align:left"></div>
+                </div>
+                <div  class="clearfix">
+                    <Button type="primary">确认提交</Button>
+                </div>
+            </div>
+            <div class="fl" style='width:650px;' v-if='model2 == "判断题"'>
+                <radio-group v-model="disabledGroup" vertical>
+                    <radio label="是"></radio>
+                    <radio label="否"></radio>
+                </radio-group>
+                <div  class="clearfix">
+                    <Button type="primary">确认提交</Button>
+                </div>
+            </div>
+            <div class="fl" style='width:650px;' v-if='model2 == "填空题"'>
+                <div class="padding-top-10">
+                    <Input v-model="value1" type="textarea" :rows="4" placeholder="请输入答案..."></Input>
+                </div>
+                <div  class="clearfix">
+                    <Button type="primary">确认提交</Button>
+                </div>
+            </div>
+        </div>
     </Card>
 
 </template>
@@ -46,44 +71,54 @@ export default {
             model2: '选择题',
             model3: '难',
 
+            //判断题
+            disabledGroup:'是',
+            //填空题
+            value1:'',
+            editorContent:'',//题目内容
+            len: 5,//设置默认5个富文本
         };
     },
     computed: {
 
     },
     methods:{
-
+        creatEditor(){
+            let arr = [];
+            for (let i = 0; i <this.len; i++) {
+                arr['editor'+i][i] = new E(this.$refs['editor'+i])
+                arr['editor'+i][i].customConfig.onchange = (html) => {
+                    this['editorContent'+i] = html
+                }
+                arr['editor'+i][i].customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
+                arr['editor'+i][i].create()
+            }
+            console.log(arr);
+            
+            arr['editor0'].customConfig.menus = [
+                'head',  // 标题
+                'bold',  // 粗体
+                'fontSize',  // 字号
+                'fontName',  // 字体
+                'italic',  // 斜体
+                'underline',  // 下划线
+                'strikeThrough',  // 删除线
+                'foreColor',  // 文字颜色
+                'backColor',  // 背景颜色
+                'link',  // 插入链接
+                'list',  // 列表
+                'justify',  // 对齐方式
+                'emoticon',  // 表情
+                'image',  // 插入图片
+                'table',  // 表格
+                'undo',  // 撤销
+                'redo'  // 重复
+            ]
+            
+        }
     },
     mounted() {
-        console.log('修改了一点')
-
-        var editor = new E(this.$refs.editor)
-        editor.customConfig.onchange = (html) => {
-          this.editorContent = html
-        }
-        editor.customConfig.menus = [
-            'head',  // 标题
-            'bold',  // 粗体
-            'fontSize',  // 字号
-            'fontName',  // 字体
-            'italic',  // 斜体
-            'underline',  // 下划线
-            'strikeThrough',  // 删除线
-            'foreColor',  // 文字颜色
-            'backColor',  // 背景颜色
-            'link',  // 插入链接
-            'list',  // 列表
-            'justify',  // 对齐方式
-            'emoticon',  // 表情
-            'image',  // 插入图片
-            'table',  // 表格
-            'undo',  // 撤销
-            'redo'  // 重复
-        ]
-        editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-        editor.create()
-        console.log();
-        
+        this.creatEditor();
       }
 };
 </script>

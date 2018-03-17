@@ -82,6 +82,8 @@ export default {
         ]
         editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
         editor.create()
+        console.log();
+        
       }
 };
 </script>

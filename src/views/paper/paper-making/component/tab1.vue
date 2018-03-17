@@ -27,7 +27,6 @@
                 <Option v-for="item in cityList3" :value="item" :key="item">{{ item }}</Option>
             </Select>
             <Input v-model="searchConName" icon="search" @on-click="screenOrder" placeholder="搜索..." style="width: 200px" />
-            <Checkbox v-model="single" @on-change='chang'>Checkbox</Checkbox>
         </div>
         <div class="clearfix">
             <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
@@ -35,6 +34,19 @@
             </Row>
             <div class="clearfix">
                 <Page :total="100" class='fr padding-top-10'></Page>
+            </div>
+        </div>
+        <div>
+            <div class="margin-bottom-10 clearfix">
+                <h3 class="fl" style='padding-top:5px;'>试题标题：</h3>
+                <p class="fl" style='line-height:34px;'>这是上方输入的标题</p>
+
+            </div>
+            <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
+                <Table border :columns="orderColumnsT" :data="orderDataT"></Table>
+            </Row>
+            <div class="clearfix margin-bottom-50">
+                <Button type="primary" class='fr margin-top-10'>确认提交</Button>
             </div>
         </div>
     </Card>
@@ -63,7 +75,7 @@ export default {
                     align: 'center'
                 },
                 {
-                    title: '试卷标题',
+                    title: '题目',
                     key: 'goodsNo',
                     align: 'center'
                 },
@@ -87,8 +99,8 @@ export default {
                                         marginRight: '10px'
                                     },
                                     on: {
-                                        onChange: () => {
-                                            this.btn(params.index)
+                                        'on-change': (val) => {
+                                            this.show(params.index,val)
                                         }
                                     }
                                 }),
@@ -127,6 +139,60 @@ export default {
 
             ],
 
+            //下方表格
+            orderColumnsT: [
+
+                {
+                    title: '题型',
+                    key: 'goodsNo',
+                    align: 'center'
+                },
+                {
+                    title: '数量（已选）',
+                    key: 'difficulty',
+                    align: 'center'
+                },
+                {
+                    title: '分数',
+                    key: 'difficulty',
+                    align: 'center'
+                },
+            ],
+
+            orderDataT: [
+                {
+                    goodsNo: '选择题',
+                    difficulty:'5',
+                    single: 20,
+
+                },
+                {
+                    goodsNo: '填空题',
+                    difficulty:'5',
+                    single: 20,
+
+                },
+                {
+                    goodsNo: '判断题',
+                    difficulty:'5',
+                    single: 20,
+
+                },
+                {
+                    goodsNo: '简答题',
+                    difficulty:'5',
+                    single: 20,
+
+                },
+                {
+                    goodsNo: '合计：',
+                    difficulty:'20',
+                    single: 100,
+
+                }
+
+
+            ],
         };
     },
     computed: {
@@ -141,8 +207,10 @@ export default {
             console.log(val)
 
         },
-        chang(val){
-            console.log(val)
+        show(index,val){ //选题目
+            console.log(index)  //下标
+
+            console.log(val) //选中状态值
 
         }
     },

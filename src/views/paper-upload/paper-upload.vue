@@ -30,7 +30,9 @@
             <h3 class="fl">试题答案：</h3>
             <div class="fl" style='width:650px;' v-if='model2 == "选择题"'>
                 <div class="choose"  v-for="item in len" :key="item" >
-                    <div :ref="'editor'+item" style="text-align:left"></div>
+                    <!-- <div :ref="'editor'+item" style="text-align:left"></div> -->
+                    <Input :v-model="'value'+item" placeholder="输入选项" style="width: 300px"></Input>
+                    <VueImgInputer :v-model="'picValue'+item" theme="light" size="large"></VueImgInputer>
                 </div>
                 <div class="add_item" @click="addItem"> 添加选项</div>
                 <div  class="clearfix">
@@ -61,6 +63,7 @@
 
 <script>
 import E from 'wangeditor'
+import VueImgInputer from 'vue-img-inputer'
 export default {
     name: 'mutative-router',
     data () {
@@ -80,30 +83,27 @@ export default {
             len: 1,//设置默认5个富文本
         };
     },
-    computed: {
-
+    components: {
+        VueImgInputer
     },
     methods:{
-        creatEditor(){
-            let o = {};
-            for (let i = 1; i <this.len+1; i++) {
-                o['editor'+i] = new E(this.$refs['editor'+i][0])
-                o['editor'+i].customConfig.onchange = (html) => {
-                    this['editorContent'+i] = html
-                }
-                o['editor'+i].customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-                o['editor'+i].customConfig.menus = ['image']
-                o['editor'+i].create()
-            }
-        },
+        // creatEditor(){
+        //     let o = {};
+        //     for (let i = 1; i <this.len+1; i++) {
+        //         o['editor'+i] = new E(this.$refs['editor'+i][0])
+        //         o['editor'+i].customConfig.onchange = (html) => {
+        //             this['editorContent'+i] = html
+        //         }
+        //         o['editor'+i].customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
+        //         o['editor'+i].customConfig.menus = ['image']
+        //         o['editor'+i].create()
+        //     }
+        // },
         addItem(){
             this.len++;
-            this.creatEditor();
         }
     },
     mounted() {
-        console.log(this.$refs);
-        
         let  editor = new E(this.$refs.editor)
         editor.customConfig.onchange = (html) => {
             this.editorContent = html
@@ -129,7 +129,6 @@ export default {
         ]
         editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
         editor.create()
-        this.creatEditor();
       }
 };
 </script>
@@ -142,6 +141,17 @@ export default {
     text-align: center;
     border:1px dashed #000;
     cursor: pointer;
+}
+.img-inputer{
+    width:50px !important;
+    height:40px !important;
+}
+.img-inputer__placeholder{
+    display: none;
+}
+.choose{
+    display: flex;
+    align-items: center;
 }
 </style>
 

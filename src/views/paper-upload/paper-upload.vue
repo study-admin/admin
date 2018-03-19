@@ -33,6 +33,7 @@
                     <!-- <div :ref="'editor'+item" style="text-align:left"></div> -->
                     <Input :v-model="'value'+item" placeholder="输入选项" style="width: 300px"></Input>
                     <VueImgInputer :v-model="'picValue'+item" theme="light" size="large"></VueImgInputer>
+                    <Checkbox class="is_true" :v-model="'single'+item">是否正确</Checkbox>
                 </div>
                 <div class="add_item" @click="addItem"> 添加选项</div>
                 <div  class="clearfix">
@@ -80,7 +81,7 @@ export default {
             //填空题
             value1:'',
             editorContent:'',//题目内容
-            len: 1,//设置默认5个富文本
+            len: 4,//设置默认5个富文本
         };
     },
     components: {
@@ -152,6 +153,12 @@ export default {
 .choose{
     display: flex;
     align-items: center;
+}
+.img-inputer__icon{
+    height:30px;
+}
+.is_true{
+    margin-left: 25px;
 }
 </style>
 

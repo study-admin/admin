@@ -29,15 +29,15 @@
         <div class="clearfix">
             <h3 class="fl">试题答案：</h3>
             <div class="fl" style='width:650px;' v-if='model2 == "选择题"'>
-                <div class="choose"  v-for="item in len" :key="item" >
+                <div class="choose"  v-for="item in len" :key="item" style="padding: 5px 0">
                     <!-- <div :ref="'editor'+item" style="text-align:left"></div> -->
-                    <Input :v-model="'value'+item" placeholder="输入选项" style="width: 300px"></Input>
-                    <VueImgInputer :v-model="'picValue'+item" theme="light" size="large"></VueImgInputer>
+                    <Input :v-model="'value'+item" placeholder="输入选项" style="width: 400px" size="large"></Input>
+                    <VueImgInputer class="margin-left-10" :v-model="'picValue'+item" theme="light" size="large"></VueImgInputer>
                     <Checkbox class="is_true" :v-model="'single'+item">是否正确</Checkbox>
                 </div>
-                <div class="add_item" @click="addItem"> 添加选项</div>
-                <div  class="clearfix">
-                    <Button type="primary">确认提交</Button>
+                 <Button long @click="addItem" class="margin-top-20">添加选项</Button>
+                <div class="clearfix margin-top-20 margin-bottom-30">
+                    <Button type="primary" class="fr">确认提交</Button>
                 </div>
             </div>
             <div class="fl" style='width:650px;' v-if='model2 == "判断题"'>

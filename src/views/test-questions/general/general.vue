@@ -1,51 +1,145 @@
 
-<!-- 试卷上传 -->
+<!-- 商品列表 -->
 <style lang="less">
-
+    // @import '@/styles/common.less';
+    // @import './orderManagement.less';
     @import '../../../styles/common.less';
-    .w-e-text-container{
-        height: 200px !important;
-    }
 </style>
 
 <template>
+    <div>
+        <Row>
+            <Col span="24">
+                <Card>
+                    <div class="margin-bottom-10 clearfix">
+                        <div class="fl margin-right-10">
+                            <span class="fl" style='line-height:32px;'>
 
-    <Card>
-        <div class="margin-bottom-10 clearfix">
-            <h3 class="fl" style='padding-top:5px;'>试题分类：</h3>
-            <Select v-model="model1" style="width:200px" class='margin-right-10'>
-                <Option v-for="item in cityList" :value="item" :key="item">{{ item }}</Option>
-            </Select>
-            <Select v-model="model2" style="width:200px" class='margin-right-10'>
-                <Option v-for="item in cityList2" :value="item" :key="item">{{ item }}</Option>
-            </Select>
-            <Select v-model="model3" style="width:200px">
-                <Option v-for="item in cityList3" :value="item" :key="item">{{ item }}</Option>
-            </Select>
-        </div>
-        <div class="clearfix">
-            <h3 class="fl">试题内容：</h3>
-            <div class="fl" style='width:650px;'>
-                <div ref="editor" style="text-align:left"></div>
-            </div>
-        </div>
-    </Card>
+                            题型分类：</span>
+                            <Select class='fl margin-right-10' v-model="model1" style="width:100px" placeholder='选择类型'>
+                                <Option v-for="item in pay_type" :value="item" :key="item">{{ item }}</Option>
+                            </Select>
+                        </div>
+                        <Row class='fl margin-right-10'>
+                            <Input v-model="searchConName" icon="search" @on-click='' placeholder="..." style="width: 200px" />
+                        </Row>
 
+                    </div>
+                    <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
+                        <Table border :columns="orderColumns" :data="orderData"></Table>
+                    </Row>
+
+                    <div class="clearfix">
+
+                       <!--  <Page :total=total size="small" class='fr margin-top-20' show-elevator show-sizer show-total
+                        @on-change = 'changePage' @on-page-size-change='changePageSize' placement='top'></Page> -->
+                    </div>
+                </Card>
+            </Col>
+        </Row>
+    </div>
 </template>
 
 <script>
-import E from 'wangeditor'
 export default {
     name: 'mutative-router',
     data () {
         return {
-            cityList: ['电力类','变电类','通用类'],
-            cityList2: ['选择题','填空题','判断题'],
-            cityList3: ['难','中等','简单'],
-            model1: '电力类',
-            model2: '选择题',
-            model3: '难',
+            orderColumns: [
+                {
+                    type: 'index',
+                    width: 60,
+                    align: 'center'
+                },
+                {
+                    title: '题目',
+                    key: 'goodsNo',
+                    align: 'center'
+                },
+                {
+                    title: '难度',
+                    key: 'brandName',
+                    align: 'center'
+                },
+                {
+                    title: '上传时间',
+                    key: 'salePrice',
+                    align: 'center'
+                },
 
+                {
+                    title: '操作',
+                    key: 'operation',
+                    align: 'center',
+                    render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '10px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            // this.show(params.index)
+                                            this.show(params.index)
+                                        }
+                                    }
+                                }, '修改'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.remove(params.index)
+                                        }
+                                    }
+                                }, '删除')
+                            ])
+                    }
+                }
+            ],
+
+            orderData: [
+                {
+                    goodsNo: '国际标准说明',
+                    brandName:'中等',
+                    salePrice: '2018-02-06',
+
+                },
+                {
+                    goodsNo: '国际标准说明',
+                    brandName:'中等',
+                    salePrice: '2018-02-06',
+
+                },
+                {
+                    goodsNo: '国际标准说明',
+                    brandName:'中等',
+                    salePrice: '2018-02-06',
+
+                },
+                {
+                    goodsNo: '国际标准说明',
+                    brandName:'中等',
+                    salePrice: '2018-02-06',
+
+                },
+
+
+            ],
+            searchConName:'',
+            model1:'',
+            pay_type:[
+                '判断题','选择题','填空题'
+            ],
+            total:0,//总页数
+            current:1,//当前页码
+            pageSize:10,//每页数量
         };
     },
     computed: {
@@ -54,32 +148,8 @@ export default {
     methods:{
 
     },
-    mounted() {
-        var editor = new E(this.$refs.editor)
-        editor.customConfig.onchange = (html) => {
-          this.editorContent = html
-        }
-        editor.customConfig.menus = [
-            'head',  // 标题
-            'bold',  // 粗体
-            'fontSize',  // 字号
-            'fontName',  // 字体
-            'italic',  // 斜体
-            'underline',  // 下划线
-            'strikeThrough',  // 删除线
-            'foreColor',  // 文字颜色
-            'backColor',  // 背景颜色
-            'link',  // 插入链接
-            'list',  // 列表
-            'justify',  // 对齐方式
-            'emoticon',  // 表情
-            'image',  // 插入图片
-            'table',  // 表格
-            'undo',  // 撤销
-            'redo'  // 重复
-        ]
-        editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-        editor.create()
-      }
+    mounted(){
+
+    }
 };
 </script>

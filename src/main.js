@@ -9,9 +9,10 @@ import 'iview/dist/styles/iview.css';
 import VueI18n from 'vue-i18n';
 import util from './libs/util';
 import babelPolyfill from 'babel-polyfill'  //解决ie的兼容
-
+import global from './global'
 Vue.use(VueI18n);
 Vue.use(iView);
+Vue.prototype.GLOBAL = global
 
 new Vue({
     el: '#app',

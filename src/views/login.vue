@@ -30,7 +30,7 @@
                             <Button @click="handleSubmit" type="primary" long>登录</Button>
                         </FormItem>
                     </Form>
-                    <p class="login-tip">输入任意用户名和密码即可</p>
+                    <p class="login-tip">请输入用户名密码</p>
                 </div>
             </Card>
         </div>
@@ -39,12 +39,13 @@
 
 <script>
 import Cookies from 'js-cookie';
+import axios from 'axios'
 export default {
     data () {
         return {
             form: {
-                userName: 'hehe',
-                password: ''
+                userName: '1642586004@qq.com',
+                password: 'xyz20130713'
             },
             rules: {
                 userName: [
@@ -60,17 +61,30 @@ export default {
         handleSubmit () {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
-                    Cookies.set('user', this.form.userName);
-                    Cookies.set('password', this.form.password);
-                    this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
-                    if (this.form.userName === 'admin') {
-                        Cookies.set('access', 0);
-                    } else {
-                        Cookies.set('access', 1);
-                    }
-                    this.$router.push({
-                        name: 'home_index'
+                    axios.post(this.GLOBAL.PORER_URL+'api/oauth/access_token', {
+                        grant_type: 'password',
+                        client_id: 1,
+                        client_secret:'base64:QHlQ+oBcTcIFdIShPLvPOmu5ZChdY4fcA',
+                        username:this.form.userName,
+                        passworld:this.form.password
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
                     });
+                    // Cookies.set('user', this.form.userName);
+                    // Cookies.set('password', this.form.password);
+                    // this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
+                    // if (this.form.userName === 'admin') {
+                    //     Cookies.set('access', 0);
+                    // } else {
+                    //     Cookies.set('access', 1);
+                    // }
+                    // this.$router.push({
+                    //     name: 'home_index'
+                    // });
                 }
             });
         }

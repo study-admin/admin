@@ -32,5 +32,5 @@ module.exports = merge(webpackBaseConfig, {
             filename: '../index.html',
             inject: false
         })
-    ]
+    ],
 });

@@ -51,7 +51,7 @@
             </div>
             <div class="fl" style='width:650px;' v-if='model2 == "填空题"'>
                 <div class="padding-top-10">
-                    <Input v-model="value1" type="textarea" :rows="4" placeholder="请输入答案..."></Input>
+                    <Input v-model="value1" type="textarea" :rows="4" placeholder="多个答案请按顺序输入，答案以逗号间隔"></Input>
                 </div>
                 <div  class="clearfix">
                     <Button type="primary">确认提交</Button>
@@ -75,7 +75,7 @@ export default {
             model1: '电力类',
             model2: '选择题',
             model3: '难',
-
+            
             //判断题
             disabledGroup:'是',
             //填空题
@@ -105,6 +105,7 @@ export default {
         }
     },
     mounted() {
+        
         let  editor = new E(this.$refs.editor)
         editor.customConfig.onchange = (html) => {
             this.editorContent = html

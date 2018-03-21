@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-<template>
-  
-</template>
-<script>
-export default {
-  
-}
-=======
 
 <!-- 试卷制定 -->
 <style lang="less">
@@ -138,5 +129,4 @@ export default {
 
       }
 };
->>>>>>> 1d35599627a6f3c67d11c4a1acffd30ef3b01033
 </script>

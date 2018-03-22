@@ -1,5 +1,9 @@
 <style lang="less">
     @import './login.less';
+    .login{
+        background: url(../image/bg.png) no-repeat;
+        background-size: 100%;
+    }
 </style>
 
 <template>
@@ -66,7 +70,7 @@ export default {
                         client_id: 1,
                         client_secret:'base64:QHlQ+oBcTcIFdIShPLvPOmu5ZChdY4fcA',
                         username:this.form.userName,
-                        passworld:this.form.password
+                        password:this.form.password
                     })
                     .then(function (response) {
                         console.log(response);

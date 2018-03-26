@@ -9,9 +9,13 @@
 <template>
     <Card>
         <div class="margin-bottom-10 clearfix">
+            <h3 class="fl" style='padding-top:5px;'>试题编号：</h3>
+            <Input style="width:200px" v-model="no" class="margin-right-10"></Input>
+        </div>
+        <div class="margin-bottom-10 clearfix">
             <h3 class="fl" style='padding-top:5px;'>试题分类：</h3>
             <Select v-model="model1" style="width:200px" class='margin-right-10'>
-                <Option v-for="item in cityList" :value="item" :key="item">{{ item }}</Option>
+                <Option v-for="item in cityList" :value="item.name" :key="item.id">{{ item.name }}</Option>
             </Select>
             <Select v-model="model2" style="width:200px" class='margin-right-10'>
                 <Option v-for="item in cityList2" :value="item" :key="item">{{ item }}</Option>
@@ -29,15 +33,16 @@
         <div class="clearfix">
             <h3 class="fl">试题答案：</h3>
             <div class="fl" style='width:650px;' v-if='model2 == "选择题"'>
-                <div class="choose"  v-for="item in len" :key="item" style="padding: 5px 0">
+                <div class="choose"  v-for="(item,index) in len" :key="item" style="padding: 5px 0">
                     <!-- <div :ref="'editor'+item" style="text-align:left"></div> -->
-                    <Input :v-model="'value'+item" placeholder="输入选项" style="width: 400px" size="large"></Input>
+                    {{item}}
+                    <Input v-model="answer[index]" placeholder="输入选项" style="width: 400px" size="large"></Input>
                     <VueImgInputer class="margin-left-10" :v-model="'picValue'+item" theme="light" size="large"></VueImgInputer>
-                    <Checkbox class="is_true" :v-model="'single'+item">是否正确</Checkbox>
+                    <Checkbox class="is_true" v-model="single[index]">是否正确</Checkbox>
                 </div>
                  <Button long @click="addItem" class="margin-top-20">添加选项</Button>
                 <div class="clearfix margin-top-20 margin-bottom-30">
-                    <Button type="primary" class="fr">确认提交</Button>
+                    <Button type="primary" class="fr" @click="submitPaper">确认提交</Button>
                 </div>
             </div>
             <div class="fl" style='width:650px;' v-if='model2 == "判断题"'>
@@ -46,7 +51,7 @@
                     <radio label="否"></radio>
                 </radio-group>
                 <div  class="clearfix">
-                    <Button type="primary">确认提交</Button>
+                    <Button type="primary" @click="submitPaper">确认提交</Button>
                 </div>
             </div>
             <div class="fl" style='width:650px;' v-if='model2 == "填空题"'>
@@ -54,7 +59,7 @@
                     <Input v-model="value1" type="textarea" :rows="4" placeholder="多个答案请按顺序输入，答案以逗号间隔"></Input>
                 </div>
                 <div  class="clearfix">
-                    <Button type="primary">确认提交</Button>
+                    <Button type="primary" @click="submitPaper">确认提交</Button>
                 </div>
             </div>
         </div>
@@ -69,13 +74,15 @@ export default {
     name: 'mutative-router',
     data () {
         return {
-            cityList: ['电力类','变电类','通用类'],
+            no:'',//试题编号
+            cityList: [],
             cityList2: ['选择题','填空题','判断题'],
             cityList3: ['难','中等','简单'],
-            model1: '电力类',
+            model1: '',
             model2: '选择题',
             model3: '难',
-            
+            answer:[],
+            single:[],
             //判断题
             disabledGroup:'是',
             //填空题
@@ -88,24 +95,80 @@ export default {
         VueImgInputer
     },
     methods:{
-        // creatEditor(){
-        //     let o = {};
-        //     for (let i = 1; i <this.len+1; i++) {
-        //         o['editor'+i] = new E(this.$refs['editor'+i][0])
-        //         o['editor'+i].customConfig.onchange = (html) => {
-        //             this['editorContent'+i] = html
-        //         }
-        //         o['editor'+i].customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-        //         o['editor'+i].customConfig.menus = ['image']
-        //         o['editor'+i].create()
-        //     }
-        // },
+        submitPaper(){
+            let type ='';//获取题型id
+            this.cityList.forEach(item => {
+                if(this.model1 == item.name){
+                    type = item.id
+                }
+            });
+            let difficulty = '';//获取提醒难度
+            switch(this.model3){
+                case '简单':
+                    difficulty = 1
+                break;
+                case '中等':
+                    difficulty = 2
+                break;
+                case '难':
+                    difficulty = 3
+                break;
+                default:
+            }
+            
+           switch(this.model2)
+            {
+            case '选择题':
+                let choice = [];
+                for (let i = 0; i < this.len; i++) {
+                    choice.push({"content":this.answer[i],"answer":this.single[i]||0})                 
+                } 
+                console.log(type);
+                let data = {
+                    no:this.no,
+                    title:this.editorContent,
+                    type,
+                    difficulty,
+                    option:'choice',
+                    options:JSON.stringify({
+                        choice,
+                    })
+                }
+                console.log(data);
+                
+                this.GLOBAL.tokenRequest({
+                    method:"post",
+                    baseURL:this.GLOBAL.PORER_URL,
+                    url:'api/question',
+                    data,
+                }).then(({data:data})=>{
+                    console.log(data);
+                    
+                })
+            break;
+            case '填空题':
+            
+            break;
+            case '判断题':
+
+            break;
+            default:
+            
+            }
+        },
         addItem(){
             this.len++;
         }
     },
     mounted() {
-        
+        this.GLOBAL.tokenRequest({
+            baseURL:this.GLOBAL.PORER_URL,
+            url:'api/type',
+        }).then(({data:data})=>{
+            console.log(data.data);
+            this.cityList = data.data;
+            this.model1 = data.data[0].name
+        })
         let  editor = new E(this.$refs.editor)
         editor.customConfig.onchange = (html) => {
             this.editorContent = html

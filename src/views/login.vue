@@ -72,23 +72,18 @@ export default {
                         username:this.form.userName,
                         password:this.form.password
                     })
-                    .then(function (response) {
-                        console.log(response);
+                    .then(({data:data})=>{
+                        console.log(data);
+                        Cookies.set('user', this.form.userName);
+                        Cookies.set('password', this.form.password);
+                        Cookies.set('access_token',data.access_token)
+                        this.$router.push({
+                            name: 'home_index'
+                        });
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
-                    // Cookies.set('user', this.form.userName);
-                    // Cookies.set('password', this.form.password);
-                    // this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
-                    // if (this.form.userName === 'admin') {
-                    //     Cookies.set('access', 0);
-                    // } else {
-                    //     Cookies.set('access', 1);
-                    // }
-                    // this.$router.push({
-                    //     name: 'home_index'
-                    // });
                 }
             });
         }

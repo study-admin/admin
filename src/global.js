@@ -1,33 +1,19 @@
 import axios from 'axios'
 import Vue from 'vue'
+import Cookies from 'js-cookie';
 
-const PORER_URL = 'http://qpaper.mxzhzl.com/'
+// const PORER_URL = 'http://qpaper.mxzhzl.com/'
+const PORER_URL = 'http://192.168.3.13/'
 // const CLIENT_ID = 4
 // const CLIENT_SECRET = 'L60f0vTWC-7labXVGDoOj2HVns-YqkbO'
 const _this = Vue.prototype
 
-// function authLogin() {
-//   request({
-//     method: 'post',
-//     baseURL: PORER_URL,
-//     url: 'api/oauth/access_token',
-//     data: {
-//       grant_type: 'password',
-//       client_id: 1,
-//       client_secret:'base64:QHlQ+oBcTcIFdIShPLvPOmu5ZChdY4fcA',
-//       username,
-//       passworld
-//       // redirect_url: window.location.href
-//     }
-//   }).then(({data: data}) => {
-//     _this.$cookie.set('access_token', data.access_token, '')
-//     window.location.href = login_url;
-//     return false
-//   })
-// }
+ function authLogin() {
+  this.$router.push({path:'/login'})  
+ }
 
 function tokenRequest({method = 'get', baseURL, url, param, data,contentType = 'application/x-www-form-urlencoded'}) {
-  let token = _this.$cookie.get('access_token')
+  let token = Cookies.get('access_token')
   if (!token) {
     authLogin()
     return
@@ -47,7 +33,7 @@ function tokenRequest({method = 'get', baseURL, url, param, data,contentType = '
   return axios({
     method: method,
     url: url,
-    param: param,
+    params: param,
     data:data
   }).catch((error) => {
     if (error.response.status === 401) {

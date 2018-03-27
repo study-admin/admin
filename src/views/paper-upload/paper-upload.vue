@@ -55,13 +55,27 @@
                 </div>
             </div>
             <div class="fl" style='width:650px;' v-if='model2 == "填空题"'>
-                <div class="padding-top-10">
-                    <Input v-model="value1" type="textarea" :rows="4" placeholder="多个答案请按顺序输入，答案以逗号间隔"></Input>
+                <Button @click="addD">点击生成答案</Button>
+                <div>
+
+                     <div class="choose"  v-for="(item,index) in lengths" :key="item" style="padding: 5px 0">
+                        <Input v-model="answerT[index]" style="width: 400px" size="large"></Input>
+
+                    </div>
                 </div>
                 <div  class="clearfix">
                     <Button type="primary" @click="submitPaper">确认提交</Button>
                 </div>
             </div>
+            <div class="fl" style='width:650px;' v-if='model2 == "问答题"'>
+                <div class="padding-top-10">
+                    <Input v-model="value1" type="textarea" :rows="4" placeholder=""></Input>
+                </div>
+                <div  class="clearfix">
+                    <Button type="primary" @click="submitPaper">确认提交</Button>
+                </div>
+            </div>
+            
         </div>
     </Card>
 
@@ -76,7 +90,7 @@ export default {
         return {
             no:'',//试题编号
             cityList: [],
-            cityList2: ['选择题','填空题','判断题'],
+            cityList2: ['选择题','填空题','判断题','问答题'],
             cityList3: ['难','中等','简单'],
             model1: '',
             model2: '选择题',
@@ -88,7 +102,12 @@ export default {
             //填空题
             value1:'',
             editorContent:'',//题目内容
+            editor:{},
             len: 4,//设置默认5个富文本
+
+            //填空题
+            lengths:0,
+            answerT:[],
         };
     },
     components: {
@@ -128,7 +147,7 @@ export default {
                 default:
             }
             if(this.editorContent.trim()==''){
-                this.error()
+                // this.error()
             }
             let data = {//初始数据
                 no:this.no,
@@ -142,9 +161,6 @@ export default {
             {
             case '选择题':
                 let choice = [];
-                let a = this.single.map((item,i)=>{
-                    return item == undefined
-                })
                 for (let i = 0; i < this.len; i++) {
                     choice.push({"content":this.answer[i],"answer":this.single[i]||0})                 
                 } 
@@ -163,9 +179,11 @@ export default {
             break;
             case '填空题':
                 let blank = [];
-                for (let i = 0; i < this.len; i++) {
-                    blank.push({"answer":this.answer[i]})                 
+                for (let i = 0; i < this.lengths; i++) {
+                    blank.push({"answer":this.answerT[i]})                 
                 } 
+                console.log(blank);
+                
                 data.option = 'blank'
                 data.options = JSON.stringify({blank})
                 this.GLOBAL.tokenRequest({
@@ -180,10 +198,34 @@ export default {
                 })
             break;
             case '判断题':
+            let check = {"answer":this.disabledGroup =="是"? 1:0}
             data.option = 'check'
+            data.options = JSON.stringify({check})
+            this.GLOBAL.tokenRequest({
+                method:"post",
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/question',
+                data,
+            }).then(({data:data})=>{
+                if (data) {
+                    this.success()
+                }
+            })
             break;
             case '问答题':
+            let answer = {"content":this.value1}
             data.option = 'answer'
+            data.options = JSON.stringify({answer})
+            this.GLOBAL.tokenRequest({
+                method:"post",
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/question',
+                data,
+            }).then(({data:data})=>{
+                if (data) {
+                    this.success()
+                }
+            })
             break;
             default:
             
@@ -191,6 +233,11 @@ export default {
         },
         addItem(){
             this.len++;
+        },
+        addD(){
+            console.log('点击了添加')
+            this.editor.txt.append('<span>(___)</span>')
+            this.lengths++ ;
         }
     },
     mounted() {
@@ -202,11 +249,11 @@ export default {
             this.cityList = data.data;
             this.model1 = data.data[0].name
         })
-        let  editor = new E(this.$refs.editor)
-        editor.customConfig.onchange = (html) => {
+        this.editor = new E(this.$refs.editor)
+        this.editor.customConfig.onchange = (html) => {
             this.editorContent = html
         }
-        editor.customConfig.menus = [
+        this.editor.customConfig.menus = [
             'head',  // 标题
             'bold',  // 粗体
             'fontSize',  // 字号
@@ -225,8 +272,8 @@ export default {
             'undo',  // 撤销
             'redo'  // 重复
         ]
-        editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-        editor.create()
+        this.editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
+        this.editor.create()
       }
 };
 </script>

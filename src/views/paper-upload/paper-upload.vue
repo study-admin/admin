@@ -95,6 +95,18 @@ export default {
         VueImgInputer
     },
     methods:{
+        success () {
+            this.$Notice.success({
+                title: '上传成功',
+                desc: ''
+            });
+        },
+        error () {
+            this.$Notice.error({
+                title: '上传失败，检查上传内容',
+                desc: ''
+            });
+        },
         submitPaper(){
             let type ='';//获取题型id
             this.cityList.forEach(item => {
@@ -115,42 +127,63 @@ export default {
                 break;
                 default:
             }
-            
+            if(this.editorContent.trim()==''){
+                this.error()
+            }
+            let data = {//初始数据
+                no:this.no,
+                title:this.editorContent,
+                type,
+                difficulty,
+                option:'',
+                options:''
+            }
            switch(this.model2)
             {
             case '选择题':
                 let choice = [];
+                let a = this.single.map((item,i)=>{
+                    return item == undefined
+                })
                 for (let i = 0; i < this.len; i++) {
                     choice.push({"content":this.answer[i],"answer":this.single[i]||0})                 
                 } 
-                console.log(type);
-                let data = {
-                    no:this.no,
-                    title:this.editorContent,
-                    type,
-                    difficulty,
-                    option:'choice',
-                    options:JSON.stringify({
-                        choice,
-                    })
-                }
-                console.log(data);
-                
+                data.option = 'choice'
+                data.options = JSON.stringify({choice})
                 this.GLOBAL.tokenRequest({
                     method:"post",
                     baseURL:this.GLOBAL.PORER_URL,
                     url:'api/question',
                     data,
                 }).then(({data:data})=>{
-                    console.log(data);
-                    
+                    if (data) {
+                        this.success()
+                    }
                 })
             break;
             case '填空题':
-            
+                let blank = [];
+                for (let i = 0; i < this.len; i++) {
+                    blank.push({"answer":this.answer[i]})                 
+                } 
+                data.option = 'blank'
+                data.options = JSON.stringify({blank})
+                this.GLOBAL.tokenRequest({
+                    method:"post",
+                    baseURL:this.GLOBAL.PORER_URL,
+                    url:'api/question',
+                    data,
+                }).then(({data:data})=>{
+                    if (data) {
+                        this.success()
+                    }
+                })
             break;
             case '判断题':
-
+            data.option = 'check'
+            break;
+            case '问答题':
+            data.option = 'answer'
             break;
             default:
             

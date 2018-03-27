@@ -2,8 +2,8 @@ import axios from 'axios'
 import Vue from 'vue'
 import Cookies from 'js-cookie';
 
-// const PORER_URL = 'http://qpaper.mxzhzl.com/'
-const PORER_URL = 'http://192.168.3.13/'
+const PORER_URL = 'http://qpaper.mxzhzl.com/'
+// const PORER_URL = 'http://192.168.3.13/'
 // const CLIENT_ID = 4
 // const CLIENT_SECRET = 'L60f0vTWC-7labXVGDoOj2HVns-YqkbO'
 const _this = Vue.prototype

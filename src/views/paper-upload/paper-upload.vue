@@ -147,7 +147,7 @@ export default {
                 default:
             }
             if(this.editorContent.trim()==''){
-                // this.error()
+                this.error()
             }
             let data = {//初始数据
                 no:this.no,
@@ -166,70 +166,42 @@ export default {
                 } 
                 data.option = 'choice'
                 data.options = JSON.stringify({choice})
-                this.GLOBAL.tokenRequest({
-                    method:"post",
-                    baseURL:this.GLOBAL.PORER_URL,
-                    url:'api/question',
-                    data,
-                }).then(({data:data})=>{
-                    if (data) {
-                        this.success()
-                    }
-                })
+                
             break;
             case '填空题':
                 let blank = [];
                 for (let i = 0; i < this.lengths; i++) {
                     blank.push({"answer":this.answerT[i]})                 
                 } 
-                console.log(blank);
-                
                 data.option = 'blank'
                 data.options = JSON.stringify({blank})
-                this.GLOBAL.tokenRequest({
-                    method:"post",
-                    baseURL:this.GLOBAL.PORER_URL,
-                    url:'api/question',
-                    data,
-                }).then(({data:data})=>{
-                    if (data) {
-                        this.success()
-                    }
-                })
+                
             break;
             case '判断题':
-            let check = {"answer":this.disabledGroup =="是"? 1:0}
-            data.option = 'check'
-            data.options = JSON.stringify({check})
-            this.GLOBAL.tokenRequest({
-                method:"post",
-                baseURL:this.GLOBAL.PORER_URL,
-                url:'api/question',
-                data,
-            }).then(({data:data})=>{
-                if (data) {
-                    this.success()
-                }
-            })
+                let check = {"answer":this.disabledGroup =="是"? 1:0}
+                data.option = 'check'
+                data.options = JSON.stringify({check})
+            
             break;
             case '问答题':
-            let answer = {"content":this.value1}
-            data.option = 'answer'
-            data.options = JSON.stringify({answer})
-            this.GLOBAL.tokenRequest({
-                method:"post",
-                baseURL:this.GLOBAL.PORER_URL,
-                url:'api/question',
-                data,
-            }).then(({data:data})=>{
-                if (data) {
-                    this.success()
-                }
-            })
+                let answer = {"content":this.value1}
+                data.option = 'answer'
+                data.options = JSON.stringify({answer})
+            
             break;
             default:
             
             }
+            this.GLOBAL.tokenRequest({
+                method:"post",
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/question',
+                data,
+            }).then(({data:data})=>{
+                if (data) {
+                    this.success()
+                }
+            })
         },
         addItem(){
             this.len++;

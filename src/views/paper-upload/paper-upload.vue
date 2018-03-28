@@ -5,6 +5,24 @@
     .w-e-text-container{
         height: 200px !important;
     }
+    .paper_main{
+        p{
+            // float: left;
+            display: inline-block;
+            
+        }
+     
+        .w-e-text{
+            div{
+                display: inline-block;
+            }
+        }
+        span{
+            // float: left;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+    }
 </style>
 <template>
     <Card>
@@ -26,7 +44,7 @@
         </div>
         <div class="clearfix">
             <h3 class="fl">试题内容：</h3>
-            <div class="fl" style='width:650px;'>
+            <div class="fl paper_main" style='width:650px;'>
                 <div ref="editor" style="text-align:left"></div>
             </div>
         </div>
@@ -55,6 +73,7 @@
                 </div>
             </div>
             <div class="fl" style='width:650px;' v-if='model2 == "填空题"'>
+                <!-- <button v-on:click="getContent">查看内容</button> -->
                 <Button @click="addD">点击生成答案</Button>
                 <div>
 
@@ -67,7 +86,7 @@
                     <Button type="primary" @click="submitPaper">确认提交</Button>
                 </div>
             </div>
-            <div class="fl" style='width:650px;' v-if='model2 == "问答题"'>
+            <div class="fl" style='width:650px;' v-if='model2 == "简答题"'>
                 <div class="padding-top-10">
                     <Input v-model="value1" type="textarea" :rows="4" placeholder=""></Input>
                 </div>
@@ -90,7 +109,7 @@ export default {
         return {
             no:'',//试题编号
             cityList: [],
-            cityList2: ['选择题','填空题','判断题','问答题'],
+            cityList2: ['选择题','填空题','判断题','简答题'],
             cityList3: ['难','中等','简单'],
             model1: '',
             model2: '选择题',
@@ -161,47 +180,52 @@ export default {
             {
             case '选择题':
                 let choice = [];
+                let a = this.single.map((item,i)=>{
+                    return item == undefined
+                })
                 for (let i = 0; i < this.len; i++) {
                     choice.push({"content":this.answer[i],"answer":this.single[i]||0})                 
                 } 
                 data.option = 'choice'
                 data.options = JSON.stringify({choice})
-                
+                this.GLOBAL.tokenRequest({
+                    method:"post",
+                    baseURL:this.GLOBAL.PORER_URL,
+                    url:'api/question',
+                    data,
+                }).then(({data:data})=>{
+                    if (data) {
+                        this.success()
+                    }
+                })
             break;
             case '填空题':
                 let blank = [];
-                for (let i = 0; i < this.lengths; i++) {
-                    blank.push({"answer":this.answerT[i]})                 
+                for (let i = 0; i < this.len; i++) {
+                    blank.push({"answer":this.answer[i]})                 
                 } 
                 data.option = 'blank'
                 data.options = JSON.stringify({blank})
-                
+                this.GLOBAL.tokenRequest({
+                    method:"post",
+                    baseURL:this.GLOBAL.PORER_URL,
+                    url:'api/question',
+                    data,
+                }).then(({data:data})=>{
+                    if (data) {
+                        this.success()
+                    }
+                })
             break;
             case '判断题':
-                let check = {"answer":this.disabledGroup =="是"? 1:0}
-                data.option = 'check'
-                data.options = JSON.stringify({check})
-            
+            data.option = 'check'
             break;
             case '问答题':
-                let answer = {"content":this.value1}
-                data.option = 'answer'
-                data.options = JSON.stringify({answer})
-            
+            data.option = 'answer'
             break;
             default:
             
             }
-            this.GLOBAL.tokenRequest({
-                method:"post",
-                baseURL:this.GLOBAL.PORER_URL,
-                url:'api/question',
-                data,
-            }).then(({data:data})=>{
-                if (data) {
-                    this.success()
-                }
-            })
         },
         addItem(){
             this.len++;
@@ -210,7 +234,11 @@ export default {
             console.log('点击了添加')
             this.editor.txt.append('<span>(___)</span>')
             this.lengths++ ;
-        }
+        },
+        //点击查看内容
+        // getContent: function () {
+        //     alert(this.editorContent)
+        // }
     },
     mounted() {
         this.GLOBAL.tokenRequest({

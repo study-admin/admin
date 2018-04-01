@@ -25,7 +25,7 @@
     }
 </style>
 <template>
-    <Card>
+    <div style="padding: 16px;">
         <div class="margin-bottom-10 clearfix">
             <h3 class="fl" style='padding-top:5px;'>试题编号：</h3>
             <Input style="width:200px" v-model="no" class="margin-right-10"></Input>
@@ -96,7 +96,7 @@
             </div>
             
         </div>
-    </Card>
+    </div>
 
 </template>
 

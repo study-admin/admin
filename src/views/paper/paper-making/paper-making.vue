@@ -10,7 +10,7 @@
 
 <template>
 
-    <Card>
+    <Card style="width:1000px;">
         <Tabs value="name1">
             <TabPane label="手动抽题" name="name1"><tab1></tab1></TabPane>
             <TabPane label="自动抽题" name="name2"><tab2></tab2></TabPane>

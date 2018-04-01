@@ -52,7 +52,7 @@ export const otherRouter = {
 
     component: Main,
     children: [
-        { path: 'home', title: '首页', name: 'home_index', component: () => import('@/views/home/home.vue') },
+        { path: 'paper', title: '首页', name: 'home_index', component: () => import('@/views/home/home.vue') },
         { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue') },
         { path: 'order/:order_id', title: '订单详情', name: 'order-info', component: () => import('@/views/advanced-router/component/order-info.vue') },
         // { path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue') }

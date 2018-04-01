@@ -7,7 +7,7 @@
 </style>
 
 <template>
-    <div>
+    <div style="width:1000px;">
         <Row>
             <Col span="24">
                 <Card>
@@ -17,7 +17,7 @@
 
                             题型分类：</span>
                             <Select class='fl margin-right-10' v-model="model1" style="width:100px" placeholder='选择类型'>
-                                <Option v-for="item in pay_type" :value="item" :key="item">{{ item }}</Option>
+                                <Option v-for="item in pay_type" :value="item" :key="item">{{ item}}</Option>
                             </Select>
                         </div>
                         <Row class='fl margin-right-10'>
@@ -43,6 +43,7 @@
 <script>
 export default {
     name: 'mutative-router',
+    props:['list'],
     data () {
         return {
             orderColumns: [
@@ -104,43 +105,19 @@ export default {
                 }
             ],
 
-            orderData: [
-                {
-                    goodsNo: '国际标准说明',
-                    brandName:'中等',
-                    salePrice: '2018-02-06',
-
-                },
-                {
-                    goodsNo: '国际标准说明',
-                    brandName:'中等',
-                    salePrice: '2018-02-06',
-
-                },
-                {
-                    goodsNo: '国际标准说明',
-                    brandName:'中等',
-                    salePrice: '2018-02-06',
-
-                },
-                {
-                    goodsNo: '国际标准说明',
-                    brandName:'中等',
-                    salePrice: '2018-02-06',
-
-                },
-
-
-            ],
+            orderData: [],
             searchConName:'',
             model1:'',
-            pay_type:[
-                '判断题','选择题','填空题'
-            ],
             total:0,//总页数
             current:1,//当前页码
             pageSize:10,//每页数量
+            pay_type:['选择题','填空题','判断题','简答题'],
         };
+    },
+    watch:{
+        list(){
+            this.orderData = this.list.data;
+        }
     },
     computed: {
 
@@ -149,7 +126,7 @@ export default {
 
     },
     mounted(){
-
+       
     }
 };
 </script>

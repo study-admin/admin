@@ -1,9 +1,9 @@
 <style lang="less">
     @import './login.less';
-    .login{
-        background: url(../image/bg.png) no-repeat;
-        background-size: 100%;
-    }
+    // .login{
+    //     background: url(../image/bg.png) no-repeat;
+    //     background-size: 100%;
+    // }
 </style>
 
 <template>

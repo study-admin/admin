@@ -13,19 +13,11 @@
 		</div>
 		<div class="main" :class="{'main-hide-text': shrink}">
 			<div class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}">
-				<shrinkable-menu
-					:shrink="shrink"
-					@on-change="handleSubmenuChange"
-					:theme="menuTheme"
-					:before-push="beforePush"
-					:open-names="openedSubmenuArr"
-					:menu-list="menuList">
-					<div slot="top" class="logo-con">
+				<div slot="top" class="logo-con">
 						<!--   <img v-show="!shrink"  src="../images/logo.jpg" key="max-logo" />
 						<img v-show="shrink" src="../images/logo-min.jpg" key="min-logo" /> -->
-						<h2 style='color:#fff;'>试题管理</h2>
+						<h2 style='color:#fff;height:45px;'>试题管理</h2>
 					</div>
-				</shrinkable-menu>
 			</div>
 			<div class="main-header-con" :style="{paddingLeft: shrink?'60px':'200px'}">
 				<div class="main-header">
@@ -61,7 +53,7 @@
 					<tags-page-opened :pageTagsList="pageTagsList"></tags-page-opened>
 				</div> -->
 			</div>
-			<div class="single-page-con" :style="{left: shrink?'60px':'200px'}">
+			<div class="single-page-con" :style="{left: shrink?'60px':'-10px'}">
 				<div class="single-page">
 					<keep-alive :include="cachePage">
 						<router-view></router-view>
@@ -73,7 +65,6 @@
 
 </template>
 <script>
-import shrinkableMenu from "./main-components/shrinkable-menu/shrinkable-menu.vue";
 import tagsPageOpened from "./main-components/tags-page-opened.vue";
 import breadcrumbNav from "./main-components/breadcrumb-nav.vue";
 import lockScreen from "./main-components/lockscreen/lockscreen.vue";
@@ -83,7 +74,6 @@ import util from "@/libs/util.js";
 
 export default {
   components: {
-	shrinkableMenu,
 	tagsPageOpened,
 	breadcrumbNav,
 

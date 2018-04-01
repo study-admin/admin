@@ -7,7 +7,7 @@
 </style>
 
 <template>
-    <div>
+    <div style="width:1000px;">
         <Row>
             <Col span="24">
                 <Card>

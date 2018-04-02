@@ -48,7 +48,7 @@ export const locking = {
 export const otherRouter = {
     path: '/',
     name: 'otherRouter',
-    redirect: '/home',
+    redirect: '/paper',
 
     component: Main,
     children: [

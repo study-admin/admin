@@ -16,12 +16,12 @@
                             <span class="fl" style='line-height:32px;'>
 
                             题型分类：</span>
-                            <Select class='fl margin-right-10' v-model="model1" style="width:100px" placeholder='选择类型'>
+                            <Select class='fl margin-right-10' @on-change="selectDif" v-model="model1" style="width:100px" placeholder='选择类型'>
                                 <Option v-for="item in pay_type" :value="item" :key="item">{{ item}}</Option>
                             </Select>
                         </div>
                         <Row class='fl margin-right-10'>
-                            <Input v-model="searchConName" icon="search" @on-click='' placeholder="..." style="width: 200px" />
+                            <Input v-model="searchConName" icon="search" @on-click='' placeholder="关键词，标题" style="width: 200px" />
                         </Row>
 
                     </div>
@@ -54,17 +54,17 @@ export default {
                 },
                 {
                     title: '题目',
-                    key: 'goodsNo',
+                    key: 'title',
                     align: 'center'
                 },
                 {
                     title: '难度',
-                    key: 'brandName',
+                    key: 'difficulty',
                     align: 'center'
                 },
                 {
                     title: '上传时间',
-                    key: 'salePrice',
+                    key: 'created_at',
                     align: 'center'
                 },
 
@@ -117,16 +117,46 @@ export default {
     watch:{
         list(){
             this.orderData = this.list.data;
+            console.log(this.orderData);
+            
         }
     },
     computed: {
-
+        
     },
     methods:{
-
+        selectDif(val){
+            switch (val) {
+                case "选择题":
+                    let choice;
+                    break;
+                case "填空题":
+                    let blank;
+                    break;
+                case "判断题":
+                    let check;
+                    break;
+                case "简答题":
+                    let answer;
+                    break;
+                default:
+                    break;
+            }
+        }
     },
     mounted(){
-       
+        this.GLOBAL.tokenRequest({
+            baseURL:this.GLOBAL.PORER_URL,
+            url:'api/question',
+            param:{
+                type:this.$route.query.path,
+                page:1,
+                page_count:15
+            }
+        }).then(({data:data})=>{
+            // console.log(data);
+            this.list = data
+        })
     }
 };
 </script>

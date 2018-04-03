@@ -30,9 +30,7 @@
                     </Row>
 
                     <div class="clearfix">
-
-                       <!--  <Page :total=total size="small" class='fr margin-top-20' show-elevator show-sizer show-total
-                        @on-change = 'changePage' @on-page-size-change='changePageSize' placement='top'></Page> -->
+                       <Page :total=total class="fr padding-top-10" @on-change='changePage'></Page>
                     </div>
                 </Card>
             </Col>
@@ -110,7 +108,7 @@ export default {
             model1:'',
             total:0,//总页数
             current:1,//当前页码
-            pageSize:10,//每页数量
+            pageSize:10,//每页显示数量
             pay_type:['选择题','填空题','判断题','简答题'],
         };
     },
@@ -142,6 +140,10 @@ export default {
                 default:
                     break;
             }
+        },
+        changePage(val){  //切换页码时
+            console.log(val);
+            
         }
     },
     mounted(){

@@ -5,6 +5,7 @@ import Vue from 'vue';
 
 const app = {
     state: {
+        list:{},
         cachePage: [],
         lang: '',
         isFullScreen: false,
@@ -34,9 +35,13 @@ const app = {
         dontCache: ['text-editor', 'artical-publish'] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
     },
     mutations: {
+        setList(state, newList) {
+            state.list = Object.assign({},newList);
+        },
         setTagsList (state, list) {
             state.tagsList.push(...list);
         },
+
         updateMenulist (state) {
             let accessCode = parseInt(Cookies.get('access'));
             let menuList = [];

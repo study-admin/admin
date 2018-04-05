@@ -26,7 +26,7 @@
                                 试卷制定
                         </MenuItem>
                         <MenuItem name="3">
-                                <Icon type="heart-broken"></Icon>
+                                <Icon type="heart"></Icon>
                                 试卷列表
                         </MenuItem>
                 </MenuGroup>
@@ -34,7 +34,7 @@
         </div>
         <div class="fl home-main-b">
             <paper-upload v-if="$route.query.path == 1"></paper-upload>
-            <substation v-if="$route.query.path> 3" :list="list"></substation>
+            <substation v-if="$route.query.path> 3"></substation>
             <paper-making v-if="$route.query.path == 2"></paper-making>
             <paper-list v-if="$route.query.path == 3"></paper-list>
         </div>
@@ -93,7 +93,7 @@ export default {
                 }
             }).then(({data:data})=>{
                 // console.log(data);
-                this.list = data
+                this.$store.commit('setList', data);
             })
             
         }

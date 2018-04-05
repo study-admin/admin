@@ -29,7 +29,7 @@
                         <Table border :columns="orderColumns" :data="orderData"></Table>
                     </Row>
 
-                    <div class="clearfix">
+                    <div class="clearfix" style="height:80px;">
                        <Page :total=total class="fr padding-top-10" @on-change='changePage'></Page>
                     </div>
                 </Card>
@@ -41,7 +41,6 @@
 <script>
 export default {
     name: 'mutative-router',
-    props:['list'],
     data () {
         return {
             orderColumns: [
@@ -110,43 +109,89 @@ export default {
             current:1,//当前页码
             pageSize:10,//每页显示数量
             pay_type:['选择题','填空题','判断题','简答题'],
+            option:'',//对应当前题型参数
+            type:this.$route.query.path
         };
     },
     watch:{
         list(){
             this.orderData = this.list.data;
+            this.totla = this.list.meta.pagination.total;
             console.log(this.orderData);
             
+        },
+        $route(){
+            this.model1 = '';
         }
     },
     computed: {
-        
+        list(){
+            return this.$store.state.app.list
+        },
     },
     methods:{
+        getList(){
+            this.GLOBAL.tokenRequest({
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/question',
+                param:{
+                    type:this.$route.query.path,
+                    page:this.current,
+                    page_count:this.pageSize,
+                }
+            }).then(({data:data})=>{
+                 this.$store.commit('setList', data);
+            })
+        },
+        getOptionList(){
+            this.GLOBAL.tokenRequest({//根据选择的题型拉数据
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/question',
+                param:{
+                    type:this.$route.query.path,
+                    page:this.current,
+                    page_count:this.pageSize,
+                    option:this.option,
+                }
+            }).then(({data:data})=>{
+                 this.$store.commit('setList', data);
+            })
+        },
         selectDif(val){
             switch (val) {
                 case "选择题":
-                    let choice;
+                    this.option = 'choice';
                     break;
                 case "填空题":
-                    let blank;
+                    this.option = 'blank'
                     break;
                 case "判断题":
-                    let check;
+                    this.option = 'check';
                     break;
                 case "简答题":
-                    let answer;
+                    this.option = 'answer';
                     break;
                 default:
                     break;
             }
+            this.getOptionList()
         },
         changePage(val){  //切换页码时
             console.log(val);
-            
+            if (this.model1 !='') {
+                this.getOptionList()
+            }else{
+                this.getList()
+            }
         }
     },
     mounted(){
+        this.model1 = '';
+        // if (this.option !='') {
+        //     this.getOptionList();
+        // }else{
+        //     this.getList()
+        // }
         this.GLOBAL.tokenRequest({
             baseURL:this.GLOBAL.PORER_URL,
             url:'api/question',
@@ -157,8 +202,10 @@ export default {
             }
         }).then(({data:data})=>{
             // console.log(data);
-            this.list = data
+            this.$store.commit('setList', data);
         })
+        this.orderData = this.list.data;
+        
     }
 };
 </script>

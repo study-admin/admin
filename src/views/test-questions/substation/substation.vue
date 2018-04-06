@@ -105,7 +105,7 @@ export default {
             orderData: [],
             searchConName:'',
             model1:'',
-            total:0,//总页数
+            total:0,//总条数
             current:1,//当前页码
             pageSize:10,//每页显示数量
             pay_type:['选择题','填空题','判断题','简答题'],
@@ -116,8 +116,8 @@ export default {
     watch:{
         list(){
             this.orderData = this.list.data;
-            this.totla = this.list.meta.pagination.total;
-            console.log(this.orderData);
+            this.total = this.list.meta.pagination.total;
+            console.log(this.orderData,this.list.meta.pagination,this.total);
             
         },
         $route(){
@@ -177,7 +177,7 @@ export default {
             this.getOptionList()
         },
         changePage(val){  //切换页码时
-            console.log(val);
+            this.current = val
             if (this.model1 !='') {
                 this.getOptionList()
             }else{

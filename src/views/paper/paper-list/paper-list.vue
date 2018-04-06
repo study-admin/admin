@@ -13,10 +13,12 @@
                 <Card>
                     <div class="margin-bottom-10 clearfix">
 
-                        <Row class='fl margin-right-10'>
+                        <!-- <Row class='fl margin-right-10'>
                             <Input v-model="searchConName" icon="search" @on-click='' placeholder="..." style="width: 200px" />
-                        </Row>
-
+                        </Row> -->
+                        <Select class='fl margin-right-10' @on-change="selectDif" v-model="model1" style="width:100px" placeholder='选择类型'>
+                            <Option v-for="item in menuList" :value="item.name" :key="item.id">{{ item.name}}</Option>
+                        </Select>
                     </div>
                     <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
                         <Table border :columns="orderColumns" :data="orderData"></Table>
@@ -119,7 +121,7 @@ export default {
             ],
             searchConName:'',
             model1:'',
-
+            menuList:[],
             total:0,//总页数
             current:1,//当前页码
             pageSize:10,//每页显示数量
@@ -132,10 +134,19 @@ export default {
         changePage(val){  //切换页码时
             console.log(val);
             
+        },
+        selectDif(){
+
         }
     },
     mounted(){
-
+        this.GLOBAL.tokenRequest({
+            baseURL:this.GLOBAL.PORER_URL,
+            url:'api/type',
+        }).then(({data:data})=>{
+            console.log(data.data);
+            this.menuList = data.data;
+        })
     }
 };
 </script>

@@ -10,10 +10,12 @@
     <div class="home-main clearfix">
         <div class="fl home-main-h" style="width:200px;">
             <Menu :theme="theme3" :active-name="num" @on-select='btn'>
-                <MenuItem name="1">
-                        <Icon type="document-text"></Icon>
-                        试题上传
-                </MenuItem>
+                <MenuGroup title="试卷管理">
+                        <MenuItem name="1">
+                                <Icon type="document-text"></Icon>
+                                试题上传
+                        </MenuItem>
+                </MenuGroup>
                 <MenuGroup title="试题分类">
                         <MenuItem :name="item.id" v-for="(item,index) in menuList">
                                 <Icon type="heart"></Icon>

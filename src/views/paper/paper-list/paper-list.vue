@@ -13,12 +13,12 @@
                 <Card>
                     <div class="margin-bottom-10 clearfix">
 
-                        <!-- <Row class='fl margin-right-10'>
-                            <Input v-model="searchConName" icon="search" @on-click='' placeholder="..." style="width: 200px" />
-                        </Row> -->
                         <Select class='fl margin-right-10' @on-change="selectDif" v-model="model1" style="width:100px" placeholder='选择类型'>
                             <Option v-for="item in menuList" :value="item.name" :key="item.id">{{ item.name}}</Option>
                         </Select>
+                        <Row class='fl margin-right-10'>
+                            <Input v-model="searchConName" icon="search" @on-click='search' placeholder="..." style="width: 200px" />
+                        </Row>
                     </div>
                     <div v-if="model1">
                         <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
@@ -132,6 +132,21 @@ export default {
                 this.total = data.meta.pagination.total;
             })
         },
+        search(){
+            this.GLOBAL.tokenRequest({
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/paper',
+                param:{
+                    type:this.type,
+                    page_count:10,
+                    keyword:this.searchConName
+                }
+            }).then(({data:data})=>{
+                console.log(data);
+                this.orderData = data.data;
+                this.total = data.meta.pagination.total;
+            })
+        },
         selectDif(val){
             this.type = this.menuList.filter((item)=>item.name==val)[0].id
             console.log(this.type);
@@ -156,6 +171,7 @@ export default {
         }).then(({data:data})=>{
             console.log(data.data);
             this.menuList = data.data;
+            this.model1 = data.data[0].name
         })
     }
 };

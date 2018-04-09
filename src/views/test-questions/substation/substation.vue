@@ -21,7 +21,7 @@
                             </Select>
                         </div>
                         <Row class='fl margin-right-10'>
-                            <Input v-model="searchConName" icon="search" @on-click='' placeholder="关键词，标题" style="width: 200px" />
+                            <Input v-model="searchConName" icon="search" @on-click='search' placeholder="关键词，标题" style="width: 200px" />
                         </Row>
 
                     </div>
@@ -183,6 +183,21 @@ export default {
             }else{
                 this.getList()
             }
+        },
+        search(){
+            this.GLOBAL.tokenRequest({//根据选择的题型拉数据
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/question',
+                param:{
+                    type:this.$route.query.path,
+                    page:this.current,
+                    page_count:this.pageSize,
+                    option:this.option,
+                    keyword:this.searchConName
+                }
+            }).then(({data:data})=>{
+                 this.$store.commit('setList', data);
+            })
         }
     },
     mounted(){

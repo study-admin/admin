@@ -112,7 +112,8 @@ export default {
             listID:'',//类型id／第一个参数
             total:1,
             pag:1,
-            ID:'60',
+            ID:'',
+            ids:[],//以选的ID集合
             totalScore:{},
             cityList: [],
             cityList2: ['选择题','填空题','判断题','简答题'],
@@ -146,13 +147,14 @@ export default {
                             return h('div', [
                                 h('Checkbox', {
                                     props: {
-                                        value:params.row.single
+                                        value:params.row.flag
                                     },
                                     style: {
                                         marginRight: '10px'
                                     },
                                     on: {
                                         'on-change': (val) => {
+                                            console.log(params)
                                             this.show(params.row,val)
                                         }
                                     }
@@ -302,12 +304,17 @@ export default {
                 baseURL:this.GLOBAL.PORER_URL,
                 url:'api/paper/'+this.ID,
             }).then(({data:data})=>{
-                console.log(data);
+                // console.log(data);
                 data.question.forEach(item => {
                     item.difficulty= item.difficulty ==1?'简单':item.difficulty ==2?'中等':item.difficulty ==3?'困难':'无';
                 });
                 this.choiceData = data.question;
                 console.log(this.choiceData);
+                
+                this.ids = []
+                this.choiceData.forEach((item)=>{
+                    this.ids.push(item.id)
+                })
                 
                 //重置数据
                 this.orderDataT= [{
@@ -423,6 +430,13 @@ export default {
                     item.difficulty= item.difficulty ==1?'简单':item.difficulty ==2?'中等':item.difficulty ==3?'困难':'无';
                 });
                 this.orderData = data.data
+                this.orderData.forEach((item,index)=>{
+                    if(this.ids.indexOf(item.id) != -1){
+                        item.flag = true;
+                    }else{
+                        item.flag = false;
+                    }
+                })
             })
         }
     },

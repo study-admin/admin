@@ -32,12 +32,12 @@
                     <span>难度</span>
                     <span>总和</span>
                 </div>
-                <div v-for="item in orderData">
+                <div class="item" v-for="item in orderData">
                     <span>{{item.goodsNo}}</span>
                     <span><Input v-model="item.difficulty" placeholder="" style="width: 180px"></Input></span>
                     <span><Input v-model="item.score" placeholder="" style="width: 180px"></Input></span>
                     <span>
-                        <Select v-model="model1"  style="width:250px">
+                        <Select v-model="model1"  style="width:180px">
                             <Option v-for="item in 3" :value="item" :key="item">{{ item }}</Option>
                         </Select>
                     </span>

@@ -13,11 +13,11 @@
 		</div>
 		<div class="main" :class="{'main-hide-text': shrink}">
 			<div class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}">
-				<div slot="top" class="logo-con">
+				<!-- <div slot="top" class="logo-con"> -->
 						<!--   <img v-show="!shrink"  src="../images/logo.jpg" key="max-logo" />
 						<img v-show="shrink" src="../images/logo-min.jpg" key="min-logo" /> -->
-						<h2 style='color:#fff;height:45px;'>试题管理</h2>
-					</div>
+						<!-- <h2 style='color:#fff;height:45px;'>试题管理</h2>
+					</div> -->
 			</div>
 			<div class="main-header-con" :style="{paddingLeft: shrink?'60px':'200px'}">
 				<div class="main-header">

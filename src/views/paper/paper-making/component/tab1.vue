@@ -223,8 +223,6 @@ export default {
 
         },
         getTotalScore(){
-            console.log(123);
-            
             let difficulty =0;
             let score = 0;
             let total = 0;
@@ -240,7 +238,7 @@ export default {
             }
         },
         changeScore(item){
-            if (isNaN(item.score)) {
+            if (isNaN(item.score)||item.score.trim()=='') {
                 this.$Message.error('分数只允许输入纯数字');
                 return
             }
@@ -309,6 +307,8 @@ export default {
                     item.difficulty= item.difficulty ==1?'简单':item.difficulty ==2?'中等':item.difficulty ==3?'困难':'无';
                 });
                 this.choiceData = data.question;
+                console.log(this.choiceData);
+                
                 //重置数据
                 this.orderDataT= [{
                         goodsNo: '选择题',

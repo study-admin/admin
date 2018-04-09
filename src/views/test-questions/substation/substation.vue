@@ -93,7 +93,7 @@ export default {
                                     },
                                     on: {
                                         click: () => {
-                                            this.remove(params.index)
+                                            this.remove(params.row.id)
                                         }
                                     }
                                 }, '删除')
@@ -130,6 +130,17 @@ export default {
         },
     },
     methods:{
+        remove(id){
+            console.log(id);
+            this.GLOBAL.tokenRequest({
+                method:'delete',
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/question/'+id
+            }).then(({data:data})=>{
+                this.$Message.success('删除成功');
+                this.getList()
+            })
+        },
         getList(){
             this.GLOBAL.tokenRequest({
                 baseURL:this.GLOBAL.PORER_URL,

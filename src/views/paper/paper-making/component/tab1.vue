@@ -305,6 +305,9 @@ export default {
                 url:'api/paper/'+this.ID,
             }).then(({data:data})=>{
                 console.log(data);
+                data.question.forEach(item => {
+                    item.difficulty= item.difficulty ==1?'简单':item.difficulty ==2?'中等':item.difficulty ==3?'困难':'无';
+                });
                 this.choiceData = data.question;
                 //重置数据
                 this.orderDataT= [{

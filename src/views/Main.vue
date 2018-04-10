@@ -1,5 +1,8 @@
 <style lang="less">
 @import "./main.less";
+.main_wrap{
+	overflow: hidden;
+}
 </style>
 <template>
 	<div>

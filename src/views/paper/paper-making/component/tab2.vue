@@ -222,6 +222,8 @@ export default {
                     this.ID = data;
                     this.isAuto = true;
                     this.timer = setInterval(()=>this.getOneQuestions(),500)
+                }else if(data.status == 0){
+                    this.$Message.error(data.message)
                 }
             })
         },

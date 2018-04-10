@@ -1,8 +1,9 @@
 <template>
     <div class="pi_wraper" :class="{show}">
         <h1>{{list.title}}</h1>
-        <div>
-            <h2>1.选择题</h2>
+        <div v-if="!quse.length">该试卷暂无试题</div>
+        <div v-if="quse.length">
+            <h2 v-if="choice.length">1.选择题</h2>
             <ul>
                 <li class="choice" v-for="(item,index) in choice" :key='index'>
                     <div class="title">{{index+1}}.{{item.title}};<span>( )</span></div>
@@ -11,7 +12,7 @@
                     </div>
                 </li>
             </ul>
-            <h2>2.填空题</h2>
+            <h2 v-if="blank.length">2.填空题</h2>
             <ul>
                 <li class="blank" v-for="(item,index) in blank" :key='index'>
                     <div class="title">{{index+1}}.{{item.title}};</div>
@@ -21,7 +22,7 @@
                     </div>
                 </li>
             </ul>
-            <h2>3.判断题</h2>
+            <h2 v-if="check.length">3.判断题</h2>
             <ul>
                 <li class="check" v-for="(item,index) in check" :key='index'>
                     <div class="title">{{index+1}}.{{item.title}};</div>
@@ -30,7 +31,7 @@
                     </div>
                 </li>
             </ul>
-            <h2>4.简答题</h2>
+            <h2 v-if="answer.length">4.简答题</h2>
             <ul>
                 <li class="answer" v-for="(item,index) in answer" :key='index'>
                     <div class="title">{{index+1}}.{{item.title}};</div>

@@ -120,7 +120,7 @@ export default {
         show(id){//试卷
             this.$router.push({path:'/pi',query:{id,is:0}})
         },
-        remove(){//答案卷
+        remove(id){//答案卷
             this.$router.push({path:'/pi',query:{id,is:1}})
         },
         changePage(val){  //切换页码时

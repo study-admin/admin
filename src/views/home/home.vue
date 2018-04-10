@@ -8,7 +8,7 @@
 </style>
 <template>
     <div class="home-main clearfix">
-        <div class="fl home-main-h" style="width:200px;">
+        <div class="fl home-main-h" style="width:200px;height:100%;background: #495060;">
             <Menu :theme="theme3" :active-name="num" @on-select='btn'>
                 <MenuGroup title="试卷管理">
                         <MenuItem name="1">

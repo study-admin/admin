@@ -39,6 +39,7 @@
             <substation v-if="$route.query.path> 3"></substation>
             <paper-making v-if="$route.query.path == 2"></paper-making>
             <paper-list v-if="$route.query.path == 3"></paper-list>
+            <question-info v-if="$route.query.id"></question-info>
         </div>
     </div>
 </template>
@@ -52,13 +53,17 @@ import substation from '../test-questions/substation/substation.vue'
 import paperMaking from '../paper/paper-making/paper-making.vue'
 // 试卷列表
 import paperList from '../paper/paper-list/paper-list.vue'
+
+//详情
+import questionInfo from '../question/question.vue'
 export default {
     name: 'home',
     components:{
         paperUpload,
         substation,
         paperMaking,
-        paperList
+        paperList,
+        questionInfo
     },
     data () {
         return {

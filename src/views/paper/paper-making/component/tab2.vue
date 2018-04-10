@@ -32,39 +32,41 @@
                     <span>难度</span>
                     <span>总和</span>
                 </div>
-                <div class="item" v-for="item in orderData">
+                <div class="item" v-for="(item,index) in orderData">
                     <span>{{item.goodsNo}}</span>
-                    <span><Input v-model="item.difficulty" placeholder="" style="width: 180px"></Input></span>
-                    <span><Input v-model="item.score" placeholder="" style="width: 180px"></Input></span>
+                    <span><Input v-model="item.difficulty" @on-change = 'checkVal' placeholder="" style="width: 180px"></Input></span>
+                    <span><Input v-model="item.score" @on-change = 'checkVal' placeholder="" style="width: 180px"></Input></span>
                     <span>
-                        <Select v-model="model1"  style="width:180px">
-                            <Option v-for="item in 3" :value="item" :key="item">{{ item }}</Option>
+                        <Select v-model="item.diffVal" @on-change = 'changeDiff($event,index)'  style="width:180px" :transfer = 'true'>
+                            <Option v-for="it in diff" :value="it.key" :key="it.val">{{ it.key }}</Option>
                         </Select>
                     </span>
                     <span>{{item.difficulty*item.score}}</span>
                 </div>
-                <div>
+                <!-- <div>
                     <span>合计</span>
                     <span>0</span>
                     <span>0</span>
                     <span>0</span>
-                </div>
+                </div> -->
             </div>
             <div class="clearfix margin-bottom-50">
                 <Button @click="beginAutoChoice" type="primary" class='fr margin-top-10'>开始自动抽题</Button>
             </div>
-            <div class="margin-bottom-10 clearfix">
-                <h3 class="fl" style='padding-top:5px;'>试题结果：</h3>
-                <p class="fl" style='line-height:34px;'>{{titleName}}</p>
+            <div v-if="choiceData.length">
+                <div class="margin-bottom-10 clearfix">
+                    <h3 class="fl" style='padding-top:5px;'>试题结果：</h3>
+                    <p class="fl" style='line-height:34px;'>{{titleName}}</p>
+                </div>
+                <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
+                    <Table border :columns="orderColumnsT" :data="choiceData"></Table>
+                    <div class="clearfix">
+                        <Spin size="large" fix v-if="isAuto">
+                            <slot>抽题中,请等待...</slot>
+                        </Spin>
+                    </div>
+                </Row>
             </div>
-            <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
-                <Table border :columns="orderColumnsT" :data="choiceData"></Table>
-                <div class="clearfix">
-                <Spin size="large" fix v-if="isAuto">
-                    <slot>抽题中,请等待...</slot>
-                </Spin>
-            </div>
-            </Row>
         </div>
     </Card>
 
@@ -76,6 +78,7 @@ export default {
     name: 'aaaa',
     data () {
         return {
+            canAuto:true,
             single:false,
             titleName:'',
             cityList: [],
@@ -83,32 +86,51 @@ export default {
             titleID:'',
             ID:'66',
             listID:'',
+            diffVal:'',
             isAuto:false,
             searchConName:'',
+            diff:[{
+                    val:1,
+                    key:'简单'
+                },{
+                    val:2,
+                    key:'中等'
+                },{
+                    val:3,
+                    key:'困难'
+                }],
             orderData: [
                 {
                     goodsNo: '选择题',
                     difficulty:0,
                     score:0,
-                    val:'choiceVal'
+                    val:'choiceVal',
+                    diffVal:'简单',
+                    dif:0
                 },
                 {
                     goodsNo: '填空题',
                     difficulty:0,
                     score:0,
-                    val:'blankVal'
+                    val:'blankVal',
+                    diffVal:'简单',
+                    dif:0
                 },
                 {
                     goodsNo: '判断题',
                     difficulty:0,
                     score:0,
-                    val:'checkVal'
+                    val:'checkVal',
+                    diffVal:'简单',
+                    dif:0
                 },
                 {
                     goodsNo: '简答题',
                     difficulty:0,
                     score:0,
-                    val:'answerVal'
+                    val:'answerVal',
+                    diffVal:'简单',
+                    dif:0
                 },
             ],
             //抽题结果
@@ -143,8 +165,41 @@ export default {
 
     },
     methods:{
+        changeDiff(val,i){
+            let dif = '';
+            switch (val) {
+                case '简单':
+                    dif = 0
+                    break;
+                case '中等':
+                    dif = 1
+                    break;
+                case '困难':
+                    dif = 2
+                    break;
+                default:
+                    break;
+            }
+
+        },
+        checkVal(e){
+            if (isNaN(e.data)) {
+                this.$Message.error('只能输入数字')
+                this.canAuto = false;
+            }else{
+                this.canAuto = true;
+            }
+        },
         beginAutoChoice(){
             if (this.isAuto) {
+                return
+            }
+            if (this.titleName.trim()==''||this.titleID.trim()=='') {
+                this.$Message.error('必填项输入不正确');
+                return
+            }
+            if(!this.canAuto){
+                this.$Message.error('表格内数据只能输入数字');
                 return
             }
             this.GLOBAL.tokenRequest({
@@ -156,10 +211,10 @@ export default {
                     type:this.listID,
                     no:this.titleID,
                     options:JSON.stringify({
-                        "choice": {"num":this.orderData[0].difficulty,"labe":this.orderData[0].score,"difficulty":1},
-                        "check":{"num":this.orderData[1].difficulty,"labe":this.orderData[1].score,"difficulty":0},
-                        "blank":{"num":this.orderData[2].difficulty,"labe":this.orderData[2].score,"difficulty":0},
-                        "answer":{"num":this.orderData[3].difficulty,"labe":this.orderData[3].score,"difficulty":0}
+                        "choice": {"num":this.orderData[0].difficulty,"labe":this.orderData[0].score,"difficulty":this.orderData[0].dif},
+                        "check":{"num":this.orderData[1].difficulty,"labe":this.orderData[1].score,"difficulty":this.orderData[1].dif},
+                        "blank":{"num":this.orderData[2].difficulty,"labe":this.orderData[2].score,"difficulty":this.orderData[2].dif},
+                        "answer":{"num":this.orderData[3].difficulty,"labe":this.orderData[3].score,"difficulty":this.orderData[3].dif}
                         })
                 }
             }).then(({data:data})=>{
@@ -236,7 +291,7 @@ export default {
             baseURL:this.GLOBAL.PORER_URL,
             url:'api/type',
         }).then(({data:data})=>{
-            console.log('asdasdasd',data);
+            console.log('type',data);
             this.cityList = data.data;
             this.model1 = data.data[0].name
             this.listID = data.data[0].id

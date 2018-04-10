@@ -81,7 +81,7 @@ export default {
                                     on: {
                                         click: () => {
                                             // this.show(params.index)
-                                            this.show(params.index)
+                                            this.show(params.row.id)
                                         }
                                     }
                                 }, '试卷'),
@@ -92,7 +92,7 @@ export default {
                                     },
                                     on: {
                                         click: () => {
-                                            this.remove(params.index)
+                                            this.remove(params.row.id)
                                         }
                                     }
                                 }, '答案卷')
@@ -117,6 +117,12 @@ export default {
 
     },
     methods:{
+        show(id){//试卷
+            this.$router.push({path:'/pi',query:{id,is:0}})
+        },
+        remove(){//答案卷
+            this.$router.push({path:'/pi',query:{id,is:1}})
+        },
         changePage(val){  //切换页码时
             this.GLOBAL.tokenRequest({
                 baseURL:this.GLOBAL.PORER_URL,

@@ -41,38 +41,28 @@
                         width = '800px'
                         @on-cancel="cancel">
                         <div>
-                            <div class="padding-top-10 display">
-                                <span class="fl complimentary-t margin-right-10">试题分类</span>
-                                <!-- <Input v-model="value1" placeholder="..." style="width: 300px"></Input> -->
-                                <Select v-model="value1" style="width:200px" transfer>
-                                    <Option v-for="item in cityList" :value="item" :key="item">{{ item }}</Option>
-                                </Select>
-                            </div>
-                            <div class="padding-top-10 display">
-                                <span class="fl complimentary-t margin-right-10">试题类型</span>
-                                <!-- <Input v-model="value1" placeholder="..." style="width: 300px"></Input> -->
-                                <Select v-model="value2" style="width:200px">
-                                    <Option v-for="item in cityList2" :value="item" :key="item">{{ item }}</Option>
-                                </Select>
+                            <div class="margin-bottom-10 clearfix">
+                                <h3 class="fl" style='padding-top:5px;'>试题编号：</h3>
+                                <Input style="width:200px" @on-blur = 'changeNo' v-model="no" class="margin-right-10"></Input>
                             </div>
                             <div class="padding-top-10">
-                                <span class="fl complimentary-t margin-right-10">试题难度</span>
+                                <h3 class="fl" style='padding-top:5px;'>试题难度：</h3>
                                 <!-- <Input v-model="value1" placeholder="..." style="width: 300px"></Input> -->
-                                <Select v-model="value3" style="width:200px">
+                                <Select v-model="value3" @on-change = 'changeDiff' style="width:200px">
                                     <Option v-for="item in cityList3" :value="item" :key="item">{{ item }}</Option>
                                 </Select>
                             </div>
-                            <div class="clearfix padding-top-10">
+                            <!-- <div class="clearfix padding-top-10">
                                 <span class="fl complimentary-t margin-right-10">试题内容</span>
                                 <div class="fl paper_main" style='width:650px;'>
                                     <div ref="editor" style="text-align:left"></div>
                                 </div>
-                            </div>
-                            <div class="clearfix">
+                            </div> -->
+                            <!-- <div class="clearfix">
                                 <span class="fl complimentary-t margin-right-10">试题答案：</span>
-                                <div class="fl" style='width:650px;' v-if='model2 == "选择题"'>
+                                <div class="fl" style='width:650px;' v-if='value2 == "选择题"'>
                                     <div class="choose"  v-for="(item,index) in len" :key="item" style="padding: 5px 0">
-                                        <!-- <div :ref="'editor'+item" style="text-align:left"></div> -->
+                                        <div :ref="'editor'+item" style="text-align:left"></div>
                                         {{item}}
                                         <Input v-model="answer[index]" placeholder="输入选项" style="width: 400px" size="large"></Input>
                                         <VueImgInputer class="margin-left-10" :v-model="'picValue'+item" theme="light" size="large"></VueImgInputer>
@@ -80,14 +70,14 @@
                                     </div>
                                     <Button long @click="addItem" class="margin-top-20">添加选项</Button>
                                 </div>
-                                <div class="fl" style='width:650px;' v-if='model2 == "判断题"'>
+                                <div class="fl" style='width:650px;' v-if='value2 == "判断题"'>
                                     <radio-group v-model="disabledGroup" vertical>
                                         <radio label="是"></radio>
                                         <radio label="否"></radio>
                                     </radio-group>
                                 </div>
-                                <div class="fl" style='width:650px;' v-if='model2 == "填空题"'>
-                                    <!-- <button v-on:click="getContent">查看内容</button> -->
+                                <div class="fl" style='width:650px;' v-if='value2 == "填空题"'>
+                                     <button v-on:click="getContent">查看内容</button>
                                     <Button @click="addD">点击生成答案</Button>
                                     <div>
 
@@ -97,13 +87,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="fl" style='width:650px;' v-if='model2 == "简答题"'>
+                                <div class="fl" style='width:650px;' v-if='value2 == "简答题"'>
                                     <div class="padding-top-10">
                                         <Input v-model="text1" type="textarea" :rows="4" placeholder=""></Input>
                                     </div>
                                 </div>
-                                
-                            </div>
+                            </div> -->
                         </div>
                     </Modal>
                     <div class="clearfix" style="height:80px;">
@@ -163,7 +152,21 @@ export default {
                                     },
                                     on: {
                                         click: () => {
-                                            this.show(params.row.id)
+                                            this.getInfo(params.row.id)
+                                        }
+                                    }
+                                }, '详情'),
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '10px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.show(params.row)
                                         }
                                     }
                                 }, '修改'),
@@ -221,6 +224,8 @@ export default {
             answerT:[],
             //简答
             text1:'',
+            changeId:'',
+            no:'',
         };
     },
     watch:{
@@ -240,12 +245,80 @@ export default {
         },
     },
     methods:{
+        changeNo(){
+            this.changeQuestion('no',this.no)
+        },
+        getInfo(id){
+            this.$router.push({path:'/paper',query:{id}})
+        },
+        changeDiff(){
+            let difficulty = ''
+            console.log(this.value3);
+            switch (this.value3) {
+                case '简单':
+                    difficulty = 0
+                    break;
+                case '中等':
+                    difficulty = 1
+                    break;
+                case '难':
+                    difficulty = 2
+                    break;
+                default:
+                    break;
+            }
+            this.changeQuestion('difficulty',difficulty)
+        },
         //点击修改
-        show(){
+        show(o){
+            console.log(o);
+            
+            this.no = o.no
+            let op = o.option;
+            this.no = o.no
+            this.changeId = o.id 
+            switch (op) {
+                case 'choice':
+                    this.value2 ='选择题'
+                    break;
+                case 'blank':
+                    this.value2 ='填空题'
+                    break;
+                case 'check':
+                    this.value2 ='判断题'
+                    break;
+                case 'answer':
+                    this.value2 ='简答题'
+                    break;
+                default:
+                    break;
+            }
             this.modal1 = true;
         },
         ok () { //确认修改
-            this.$Message.info('Clicked ok');
+            // this.$Message.info('Clicked ok');
+        },
+        changeQuestion(key,value){
+            console.log(value);
+            
+            this.GLOBAL.tokenRequest({
+                method:'put',
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/public/'+this.changeId,
+                data:{
+                    table:'question',
+                    data:JSON.stringify({
+                       key,
+                       value, 
+                    })
+                }
+            }).then(({data:data})=>{
+                if (data==1) {
+                    this.$Message.success('修改成功')
+                }else{
+                    this.$Message.error('修改失败')
+                }
+            })
         },
         cancel () { //取消修改
             this.$Message.info('取消修改');
@@ -361,31 +434,31 @@ export default {
         })
         this.orderData = this.list.data;
         //初始化付文本
-        this.editor = new E(this.$refs.editor)
-        this.editor.customConfig.onchange = (html) => {
-            this.editorContent = html
-        }
-        this.editor.customConfig.menus = [
-            'head',  // 标题
-            'bold',  // 粗体
-            'fontSize',  // 字号
-            'fontName',  // 字体
-            'italic',  // 斜体
-            'underline',  // 下划线
-            'strikeThrough',  // 删除线
-            'foreColor',  // 文字颜色
-            'backColor',  // 背景颜色
-            'link',  // 插入链接
-            'list',  // 列表
-            'justify',  // 对齐方式
-            'emoticon',  // 表情
-            'image',  // 插入图片
-            'table',  // 表格
-            'undo',  // 撤销
-            'redo'  // 重复
-        ]
-        this.editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-        this.editor.create()
+        // this.editor = new E(this.$refs.editor)
+        // this.editor.customConfig.onchange = (html) => {
+        //     this.editorContent = html
+        // }
+        // this.editor.customConfig.menus = [
+        //     'head',  // 标题
+        //     'bold',  // 粗体
+        //     'fontSize',  // 字号
+        //     'fontName',  // 字体
+        //     'italic',  // 斜体
+        //     'underline',  // 下划线
+        //     'strikeThrough',  // 删除线
+        //     'foreColor',  // 文字颜色
+        //     'backColor',  // 背景颜色
+        //     'link',  // 插入链接
+        //     'list',  // 列表
+        //     'justify',  // 对齐方式
+        //     'emoticon',  // 表情
+        //     'image',  // 插入图片
+        //     'table',  // 表格
+        //     'undo',  // 撤销
+        //     'redo'  // 重复
+        // ]
+        // this.editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
+        // this.editor.create()
         
     }
 };

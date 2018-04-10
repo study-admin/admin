@@ -9,7 +9,14 @@ export const loginRouter = {
     },
     component: () => import('@/views/login.vue')
 };
-
+export const pi = {
+    path: '/pi',
+    name: 'pi',
+    meta: {
+        title: '试卷'
+    },
+    component: () => import('@/views/pi.vue')
+};
 export const page404 = {
     path: '/*',
     name: 'error-404',
@@ -107,10 +114,11 @@ export const appRouter = [
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
     loginRouter,
+    pi,
     otherRouter,
     locking,
     ...appRouter,
     page500,
     page403,
-    page404
+    page404,
 ];

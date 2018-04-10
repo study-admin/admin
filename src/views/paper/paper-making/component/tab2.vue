@@ -67,6 +67,13 @@
                     </div>
                 </Row>
             </div>
+            <Modal
+                v-model="modal1"
+                title="错误"
+                @on-ok="ok"
+                @on-cancel="cancel">
+                <p>自动抽题数量不足是否继续手动抽题？</p>
+            </Modal>
         </div>
     </Card>
 
@@ -78,6 +85,8 @@ export default {
     name: 'aaaa',
     data () {
         return {
+            // 弹窗
+            modal1:false,
             canAuto:true,
             single:false,
             titleName:'',
@@ -165,6 +174,13 @@ export default {
 
     },
     methods:{
+        //弹窗
+        ok () {
+            this.$router.go(0)
+        },
+        cancel () {
+            this.$Message.info('取消跳转');
+        },
         changeDiff(val,i){
             let dif = '';
             switch (val) {
@@ -247,7 +263,8 @@ export default {
                         total +=item.difficulty
                     });
                     if (this.choiceData.length<total) {
-                        alert('数量不够')//这里是数量不够
+                        // alert('数量不够')//这里是数量不够
+                        this.modal1 = true;
                     }
                     clearInterval(this.timer)
                 }

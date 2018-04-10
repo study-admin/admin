@@ -180,7 +180,7 @@ export default {
                 default:
                     break;
             }
-
+            this.orderData[i].dif = dif
         },
         checkVal(e){
             if (isNaN(e.data)) {
@@ -242,6 +242,13 @@ export default {
                 console.log(data);
                 if (data =='') {
                     this.isAuto = false;
+                    let total = 0
+                    this.orderData.forEach(item => {
+                        total +=item.difficulty
+                    });
+                    if (this.choiceData.length<total) {
+                        alert('数量不够')//这里是数量不够
+                    }
                     clearInterval(this.timer)
                 }
                 this.getChoiceData()

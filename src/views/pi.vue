@@ -1,5 +1,6 @@
 <template>
-    <div class="pi_wraper" :class="{show}">
+    <div class='wew'>
+        <div class="pi_wraper" :class="{show}">
         <h1>{{list.title}}</h1>
         <div v-if="!quse.length">该试卷暂无试题</div>
         <div v-if="quse.length">
@@ -17,7 +18,7 @@
                 <li class="blank" v-for="(item,index) in blank" :key='index'>
                     <div class="title">{{index+1}}.{{item.title}};</div>
                     <div class="answer_">
-                        <!-- <span v-if="show" v-for="(it,idx) in item.blank" :key="idx">{{idx+1 }}. {{it.answer}}</span> -->
+            
                         <span v-for="(it,idx) in item.blank" :key="idx">{{idx+1}}.{{ show?it.answer:'_______'}}</span>
                     </div>
                 </li>
@@ -41,6 +42,7 @@
                 </li>
             </ul>
         </div>
+    </div>
     </div>
 </template>
 <script>
@@ -123,6 +125,17 @@ ul{
 }
 .show .red{
     color:red;
+}
+.wew{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left:0;
+    overflow: auto;
+    background-color: #F0F0F0;
+    z-index: 1;
+    transition: left .3s;
 }
 </style>
 

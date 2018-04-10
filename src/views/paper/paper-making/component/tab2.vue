@@ -69,7 +69,7 @@
             </div>
             <Modal
                 v-model="modal1"
-                title="错误"
+                title="提示"
                 @on-ok="ok"
                 @on-cancel="cancel">
                 <p>自动抽题数量不足是否继续手动抽题？</p>
@@ -93,7 +93,7 @@ export default {
             cityList: [],
             model1:'',
             titleID:'',
-            ID:'66',
+            ID:'',
             listID:'',
             diffVal:'',
             isAuto:false,
@@ -176,10 +176,11 @@ export default {
     methods:{
         //弹窗
         ok () {
+            this.$router.push({path:'/paper',query:{path:2,pid:this.ID}})
             this.$router.go(0)
         },
         cancel () {
-            this.$Message.info('取消跳转');
+            this.$Message.info('取消手动补充');
         },
         changeDiff(val,i){
             let dif = '';

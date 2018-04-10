@@ -78,7 +78,8 @@ export default {
                         Cookies.set('password', this.form.password);
                         Cookies.set('access_token',data.access_token)
                         this.$router.push({
-                            name: 'home_index'
+                            name: 'home_index',
+                            query:{path:1}
                         });
                     })
                     .catch(function (error) {

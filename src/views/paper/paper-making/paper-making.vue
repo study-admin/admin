@@ -11,7 +11,7 @@
 <template>
 
     <Card style="width:1000px;">
-        <Tabs value="name1">
+        <Tabs :value="name">
             <TabPane label="手动抽题" name="name1"><tab1></tab1></TabPane>
             <TabPane label="自动抽题" name="name2"><tab2></tab2></TabPane>
 
@@ -31,9 +31,15 @@ export default {
     },
     data () {
         return {
-
-
+            name
         };
+    },
+    watch:{
+        $router(){
+            if (this.$route.query.pid) {
+                name = 'name1'
+            }
+        }
     },
     computed: {
 

@@ -62,14 +62,14 @@
                     <Page :total="total" @on-change='changePage' class='fr padding-top-10'></Page>
                 </div>
             </div>
-            <div class="clearfix">
+            <div class="clearfix margin-bottom-30">
                 <!-- 已选 -->
                 <h3 class="fl" style='padding-top:5px;'>已选试题：{{titleName}}</h3>
                 <Row class="margin-top-10 searchable-table-con1 fl" justify="center" align="middle">
                     <Table border :columns="orderColumns1" :data="choiceData"></Table>
                 </Row>
             </div>
-            <div style="margin-bottom:20px;margin-top:30px;">
+            <div v-if="!$route.query.pid" style="margin-bottom:20px;margin-top:30px;">
                 <!-- <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
                     <Table border :columns="orderColumnsT" :data="orderDataT"></Table>
                 </Row> -->
@@ -112,7 +112,8 @@ export default {
             listID:'',//类型id／第一个参数
             total:1,
             pag:1,
-            ID:'',
+            ID:this.$route.query.pid,
+            pid:this.$route.query.pid,
             ids:[],//以选的ID集合
             totalScore:{},
             cityList: [],
@@ -441,6 +442,17 @@ export default {
         }
     },
     mounted() {
+        if(this.ID){
+            this.getChoiceData()
+            this.GLOBAL.tokenRequest({
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/paper/'+this.ID,
+            }).then(({data:data})=>{
+                console.log(data);
+                this.titleName = data.title;
+                this.titleID = data.no
+            })
+        }
         this.GLOBAL.tokenRequest({
             baseURL:this.GLOBAL.PORER_URL,
             url:'api/type',

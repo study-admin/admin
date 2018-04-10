@@ -177,7 +177,7 @@ export default {
                                     },
                                     on: {
                                         click: () => {
-                                            this.remove(params.index)
+                                            this.remove(params.row.id)
                                         }
                                     }
                                 }, '删除')

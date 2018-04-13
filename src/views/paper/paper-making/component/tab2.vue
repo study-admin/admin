@@ -57,13 +57,15 @@
                 <div class="margin-bottom-10 clearfix">
                     <h3 class="fl" style='padding-top:5px;'>试题结果：</h3>
                     <p class="fl" style='line-height:34px;'>{{titleName}}</p>
+                    <router-link tag="span" :to="{path: 'pi', query: {id: ID,is:0}}" class="fr" style='line-height:34px;cursor: pointer;'>去打印试卷</router-link>
+                    <router-link tag="span" :to="{path: 'pi', query: {id: ID,is:1}}"class="fr" style='line-height:34px;margin-right:15px;cursor: pointer;'>去打印答案</router-link>
                 </div>
                 <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
                     <Table border :columns="orderColumnsT" :data="choiceData"></Table>
                     <div class="clearfix">
-                        <Spin size="large" fix v-if="isAuto">
+                        <!-- <Spin size="large" fix v-if="isAuto">
                             <slot>抽题中,请等待...</slot>
-                        </Spin>
+                        </Spin> -->
                     </div>
                 </Row>
             </div>
@@ -98,6 +100,7 @@ export default {
             diffVal:'',
             isAuto:false,
             searchConName:'',
+            optionS:'choice',
             diff:[{
                     val:1,
                     key:'简单'
@@ -168,6 +171,11 @@ export default {
 
             choiceData: [],
             timer:null,
+            choicData:[],
+            checkData:[],
+            blankData:[],
+            answerData:[],
+            a:false
         };
     },
     computed: {
@@ -219,6 +227,9 @@ export default {
                 this.$Message.error('表格内数据只能输入数字');
                 return
             }
+            if (!Number(this.orderData[0].difficulty)&&!Number(this.orderData[1].difficulty)&&!Number(this.orderData[2].difficulty)&&!Number(this.orderData[3].difficulty)) {
+                return
+            }
             this.GLOBAL.tokenRequest({
                 method:'post',
                 baseURL:this.GLOBAL.PORER_URL,
@@ -261,7 +272,7 @@ export default {
                     this.isAuto = false;
                     let total = 0
                     this.orderData.forEach(item => {
-                        total +=item.difficulty
+                        total +=Number(item.difficulty)
                     });
                     if (this.choiceData.length<total) {
                         // alert('数量不够')//这里是数量不够
@@ -272,6 +283,182 @@ export default {
                 this.getChoiceData()
             })
         },
+        // getOneQuestions(){
+        //     this.getChoiceData()
+        //     switch (this.optionS) {
+        //         case 'choice':
+        //             // num = this.choiceData.filter((item)=>item.option=='选择题').length;
+                    
+        //             console.log('choice');
+        //             if (Number(this.orderData[0].difficulty)==this.choicData.length) {
+        //                 this.optionS = 'check' 
+        //                 return
+        //             }
+        //             break;
+        //         case 'check':
+        //             console.log('check');
+        //             // num = this.choiceData.filter((item)=>item.option=='判断题').length
+        //             if (Number(this.orderData[1].difficulty)==this.checkData) {
+        //                 this.optionS = 'blank'
+        //                 return 
+        //             }
+        //             break;
+        //         case 'blank':
+
+        //             console.log('blank');
+        //             // num = this.choiceData.filter((item)=>item.option=='填空题').length
+        //             if (Number(this.orderData[2].difficulty)==this.blankData.length) {
+        //                 this.optionS = 'answer' 
+        //                 return
+        //             }
+        //             break;
+        //         case 'answer':
+        //             // num = this.choiceData.filter((item)=>item.option=='问答题').length
+        //             if (Number(this.orderData[4].difficulty)==this.answerData.length) {
+        //                 //全抽完了
+        //                 clearInterval(this.timer)
+        //                 this.modal1 = this.a
+        //                 return
+        //             }
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        //     this.GLOBAL.tokenRequest({
+        //         method:'put',
+        //         baseURL:this.GLOBAL.PORER_URL,
+        //         url:'api/paper/'+this.ID+'/sample_auto',
+        //         param:{
+        //             option:this.optionS
+        //         }
+        //     }).then(({data:data})=>{
+        //         if (data=='') {
+        //             this.a = true
+        //             switch (this.optionS) {
+        //                 case 'choice':
+        //                     this.optionS = 'check'
+        //                 case 'check':
+        //                     this.optionS = 'blank'
+        //                     break;
+        //                 case 'blank':
+        //                     this.optionS = 'answer' 
+        //                     break;
+        //                 case 'answer':
+        //                     clearInterval(this.timer)
+        //                     this.modal1 = this.a
+        //                     break;
+        //                 default:
+        //                     break;
+        //             }
+        //         }else{
+        //             switch (this.optionS) {
+        //                 case 'choice':
+        //                     this.choicData.push(data) 
+        //                     break;
+        //                 case 'check':
+        //                     this.checkData.push(data) 
+        //                     break;
+        //                 case 'blank':
+        //                     this.blankData.push(data) 
+        //                     break;
+        //                 case 'answer':
+        //                     this.answerData.push(data)
+        //                     break;
+        //                 default:
+        //                     break;
+        //             }
+        //         }
+        //     })
+        // },
+        // getOneQues1(){
+        //     this.getChoiceData()
+        //     let n = this.choiceData.filter(item=>{
+        //         return item.option =='选择题'
+        //     }).length
+        //     console.log(n,Number(this.orderData[0].difficulty));
+        //     if (n==Number(this.orderData[0].difficulty)) {
+        //         this.flag2 = true;
+        //     }
+        //     this.GLOBAL.tokenRequest({
+        //         method:'put',
+        //         baseURL:this.GLOBAL.PORER_URL,
+        //         url:'api/paper/'+this.ID+'/sample_auto',
+        //         param:{
+        //             option:'choice'
+        //         }
+        //     }).then(({data:data})=>{
+        //         console.log(data);
+        //         if (data =='') {
+        //             this.flag2 = true
+        //             this.a =true;
+        //         }
+        //     })
+        // },
+        // getOneQues2(){
+        //     this.getChoiceData()
+        //     let n = this.choiceData.filter(item=>{
+        //         return item.option =='判断题'
+        //     }).length
+        //     if (n==Number(this.orderData[1].difficulty)) {
+        //         this.flag3 = true;
+        //     }
+        //     this.GLOBAL.tokenRequest({
+        //         method:'put',
+        //         baseURL:this.GLOBAL.PORER_URL,
+        //         url:'api/paper/'+this.ID+'/sample_auto',
+        //         param:{
+        //             option:'check'
+        //         }
+        //     }).then(({data:data})=>{
+        //         if (data =='') {
+        //             this.flag3 = true
+        //             this.a =true;
+        //         }
+        //     })
+        // },
+        // getOneQues3(){
+        //     this.getChoiceData()
+        //     let n = this.choiceData.filter(item=>{
+        //         return item.option =='填空题'
+        //     }).length
+        //     if (n==Number(this.orderData[2].difficulty)) {
+        //         this.flag4 = true;
+        //     }
+        //     this.GLOBAL.tokenRequest({
+        //         method:'put',
+        //         baseURL:this.GLOBAL.PORER_URL,
+        //         url:'api/paper/'+this.ID+'/sample_auto',
+        //         param:{
+        //             option:'blank'
+        //         }
+        //     }).then(({data:data})=>{
+        //         if (data =='') {
+        //             this.flag4 = true
+        //             this.a =true;
+        //         }
+        //     })
+        // },
+        // getOneQues4(){
+        //     this.getChoiceData()
+        //     let n = this.choiceData.filter(item=>{
+        //         return item.option =='问答题'
+        //     }).length
+        //     if (n==Number(this.orderData[3].difficulty)) {
+        //         // this.flag4 = true;
+        //     }
+        //     this.GLOBAL.tokenRequest({
+        //         method:'put',
+        //         baseURL:this.GLOBAL.PORER_URL,
+        //         url:'api/paper/'+this.ID+'/sample_auto',
+        //         param:{
+        //             option:'answer'
+        //         }
+        //     }).then(({data:data})=>{
+        //         if (data =='') {
+        //             this.a = true
+        //         }
+        //     })
+        // },
         getChoiceData(){
             this.GLOBAL.tokenRequest({
                 baseURL:this.GLOBAL.PORER_URL,
@@ -326,3 +513,4 @@ export default {
     }
 };
 </script>
+

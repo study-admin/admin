@@ -134,16 +134,12 @@ export default {
     },
     methods:{
         success () {
-            this.$Notice.success({
-                title: '上传成功',
-                desc: ''
-            });
+            this.$Message.success('上传成功');
+            setTimeout(()=>this.$router.go(0),500)
         },
         error () {
-            this.$Notice.error({
-                title: '上传失败，检查上传内容',
-                desc: ''
-            });
+            this.$Message.error('上传失败，检查上传内容');
+            return;
         },
         submitPaper(){
             let type ='';//获取题型id
@@ -183,7 +179,10 @@ export default {
                 let a = this.single.map((item,i)=>{
                     return item == undefined
                 })
-                for (let i = 0; i < this.len; i++) {
+                for (let i = 0; i < this.answer.length; i++) {
+                    if (this.answer[i].trim()=='') {
+                        continue;
+                    }
                     choice.push({"content":this.answer[i],"answer":this.single[i]||0})                 
                 } 
                 data.option = 'choice'
@@ -194,15 +193,18 @@ export default {
                     url:'api/question',
                     data,
                 }).then(({data:data})=>{
-                    if (data) {
-                        this.success()
+                    console.log(data);
+                    if (data.message) {
+                        this.$Message.error(data.message)
+                        return;
                     }
+                    this.success()
                 })
             break;
             case '填空题':
                 let blank = [];
-                for (let i = 0; i < this.len; i++) {
-                    blank.push({"answer":this.answer[i]})                 
+                for (let i = 0; i < this.lengths; i++) {
+                    blank.push({"answer":this.answerT[i]})                 
                 } 
                 data.option = 'blank'
                 data.options = JSON.stringify({blank})
@@ -212,16 +214,53 @@ export default {
                     url:'api/question',
                     data,
                 }).then(({data:data})=>{
-                    if (data) {
-                        this.success()
+                    if (data.message) {
+                        this.$Message.error(data.message)
+                        return;
                     }
+                    this.success()
                 })
             break;
             case '判断题':
-            data.option = 'check'
+                data.option = 'check'
+                let options = {
+                    "check":{
+                        "answer":this.disabledGroup=="是"?1:0
+                        }
+                }
+                data.options = JSON.stringify(options);
+                this.GLOBAL.tokenRequest({
+                    method:"post",
+                    baseURL:this.GLOBAL.PORER_URL,
+                    url:'api/question',
+                    data,
+                }).then(({data:data})=>{
+                    if (data.message) {
+                        this.$Message.error(data.message)
+                        return;
+                    }
+                    this.success()
+                })
             break;
-            case '问答题':
-            data.option = 'answer'
+            case '简答题':
+                data.option = 'answer';
+                data.options = JSON.stringify({
+                    "answer":{
+                        "content":this.value1
+                        }
+                });
+                this.GLOBAL.tokenRequest({
+                    method:"post",
+                    baseURL:this.GLOBAL.PORER_URL,
+                    url:'api/question',
+                    data,
+                }).then(({data:data})=>{
+                    if (data.message) {
+                        this.$Message.error(data.message)
+                        return;
+                    }
+                    this.success()
+                })
             break;
             default:
             
@@ -232,7 +271,7 @@ export default {
         },
         addD(){
             console.log('点击了添加')
-            this.editor.txt.append('<span>(___)</span>')
+            this.editor.txt.append('<span>(_____)</span>')
             this.lengths++ ;
         },
         //点击查看内容

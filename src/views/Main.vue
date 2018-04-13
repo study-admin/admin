@@ -3,6 +3,15 @@
 .main_wrap{
 	overflow: hidden;
 }
+.head-main{
+	width:100%;
+	position: fixed;
+	top:0;
+	left:0
+}
+.main{
+	padding-top:50px;
+}
 </style>
 <template>
 	<div>

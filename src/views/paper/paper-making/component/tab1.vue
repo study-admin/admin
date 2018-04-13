@@ -65,6 +65,8 @@
             <div class="clearfix margin-bottom-30">
                 <!-- 已选 -->
                 <h3 class="fl" style='padding-top:5px;'>已选试题：{{titleName}}</h3>
+                <router-link tag="span" :to="{path: 'pi', query: {id: ID,is:0}}" class="fr" style='line-height:34px;cursor: pointer;'>去打印试卷</router-link>
+                    <router-link tag="span" :to="{path: 'pi', query: {id: ID,is:1}}"class="fr" style='line-height:34px;margin-right:15px;cursor: pointer;'>去打印答案</router-link>
                 <Row class="margin-top-10 searchable-table-con1 fl" justify="center" align="middle">
                     <Table border :columns="orderColumns1" :data="choiceData"></Table>
                 </Row>

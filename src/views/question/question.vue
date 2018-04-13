@@ -7,7 +7,7 @@
         </div>
         <div class="margin-bottom-10 clearfix">
             <h3 class="fl" style='padding-top:5px;'>试题标题：</h3>
-            <div style="padding-left:100px;line-height:35px;">{{list.title}}</div>
+            <div style="line-height:35px;display:flex;" v-html ="list.title"></div>
         </div>
         <div class="margin-bottom-10 clearfix">
             <h3 class="fl" style='padding-top:5px;'>试题类型：</h3>
@@ -18,16 +18,16 @@
         <div class="margin-bottom-10 clearfix">
             <h3 class="fl" style='padding-top:5px;'>试题答案：</h3>
             <ul style="padding-left:100px;">
-                <li style="line-height:34px;" v-for="(item,index) in list.options?list.options.choice:[]" :key="index">{{index+1}}. {{item.content}}</li>
+                <li style="line-height:34px;display:flex;" v-for="(item,index) in list.options?list.options.choice:[]" :key="index">{{index+1}}. {{item.content}}</li>
             </ul>
             <ul style="padding-left:100px;">
-                <li style="line-height:34px;" v-for="(item,index) in list.options?list.options.blank:[]" :key="index">{{index+1}}. {{item.content?item.content:' '}}</li>
+                <li style="line-height:34px;display:flex;" v-for="(item,index) in list.options?list.options.blank:[]" :key="index">{{index+1}}. {{item.answer?item.answer:' '}}</li>
             </ul>
             <ul style="padding-left:100px;">
-                <li style="line-height:34px;" v-if="list.options">{{list.options?list.options.answer?list.options.answer.content:'':''}}</li>
+                <li style="line-height:34px;display:flex;" v-if="list.options">{{list.options?list.options.answer?list.options.answer.content:'':''}}</li>
             </ul>
             <ul style="padding-left:100px;">
-                <li style="line-height:34px;" v-if="list.options">{{list.options?list.options.check?list.options.check.answer==1?'正确':'错误':'':''}}</li>
+                <li style="line-height:34px;display:flex;" v-if="list.options">{{list.options?list.options.check?list.options.check.answer==1?'正确':'错误':'':''}}</li>
             </ul>
         </div>
     </Card>
@@ -55,3 +55,10 @@ export default {
   }
 }
 </script>
+<style>
+a{
+    display: flex;
+    ;justify-content: flex-start
+}
+</style>
+

@@ -36,6 +36,9 @@ const app = {
     },
     mutations: {
         setList(state, newList) {
+            newList.data.forEach(item => {
+                item.difficulty = item.difficulty==1?'简单':item.difficulty==2?'中等':item.difficulty==3?'困难':'默认'
+            });
             state.list = Object.assign({},newList);
         },
         setTagsList (state, list) {

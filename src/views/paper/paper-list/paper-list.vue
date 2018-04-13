@@ -17,7 +17,7 @@
                             <Option v-for="item in menuList" :value="item.name" :key="item.id">{{ item.name}}</Option>
                         </Select>
                         <Row class='fl margin-right-10'>
-                            <Input v-model="searchConName" icon="search" @on-click='search' placeholder="..." style="width: 200px" />
+                            <Input v-model="searchConName" icon="search" @on-enter='search' @on-click='search' placeholder="关键词／标题" style="width: 200px" />
                         </Row>
                     </div>
                     <div v-if="model1">
@@ -32,6 +32,14 @@
                         选择类别展示对应试卷
                     </div>
                 </Card>
+                <Modal
+                    v-model="model2"
+                    title="试卷修改"
+                    @on-ok="ok"
+                    @on-cancel="cancel">
+                    <h3>修改标题<Input v-model="newTitle"></Input></h3>
+                    <h3>修改编号<Input v-model="newNo"></Input></h3>                    
+                </Modal>
             </Col>
         </Row>
     </div>
@@ -42,6 +50,9 @@ export default {
     name: 'mutative-router',
     data () {
         return {
+            model2:false,
+            newTitle:'',
+            newNo:'',
             orderColumns: [
                 {
                     type: 'index',
@@ -49,8 +60,8 @@ export default {
                     align: 'center'
                 },
                 {
-                    titel:'编号',
-                    key:'no',
+                    title: '编号',
+                    key: 'no',
                     align: 'center'
                 },
                 {
@@ -68,6 +79,7 @@ export default {
                     title: '操作',
                     key: 'operation',
                     align: 'center',
+                    width:300,
                     render: (h, params) => {
                             return h('div', [
                                 h('Button', {
@@ -80,11 +92,52 @@ export default {
                                     },
                                     on: {
                                         click: () => {
-                                            // this.show(params.index)
+                                            this.go(params.row.id)
+                                        }
+                                    }
+                                }, '变更'),
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '10px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.change(params.row)
+                                        }
+                                    }
+                                }, '修改'),
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '10px'
+                                    },
+                                    on: {
+                                        click: () => {
                                             this.show(params.row.id)
                                         }
                                     }
                                 }, '试卷'),
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '10px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.remove(params.row.id)
+                                        }
+                                    }
+                                }, '答案卷'),
                                 h('Button', {
                                     props: {
                                         type: 'error',
@@ -92,10 +145,10 @@ export default {
                                     },
                                     on: {
                                         click: () => {
-                                            this.remove(params.row.id)
+                                            this.delete(params.row.id)
                                         }
                                     }
-                                }, '答案卷')
+                                }, '删除')
                             ])
                     }
                 }
@@ -111,12 +164,71 @@ export default {
             total:0,//总页数
             current:1,//当前页码
             pageSize:10,//每页显示数量
+            changeId:'',
+            oldTitel:'',
+            oldNo:'',
         };
     },
     computed: {
 
     },
     methods:{
+        go(id){
+            this.$router.push({path:'paper',query:{path:2,pid:id}})
+        },
+        ok () {
+            if (this.oldTitel !=this.newTitle) {
+                this.changePaper('title',this.newTitle)
+            }
+            if (this.oldNo !=this.newNo) {
+                this.changePaper('no',this.newNo)
+            }
+        },
+        changePaper(key,value){
+            this.GLOBAL.tokenRequest({
+                method:'put',
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/public/'+this.changeId,
+                data:{
+                    table:'paper',
+                    data:JSON.stringify({
+                        key,
+                        value,
+                    })
+                }
+            }).then(({data:data})=>{
+                if (data) {
+                    this.$Message.success('修改成功')
+                    this.model2 = false;
+                    this.selectDif(this.model1)
+                }else{
+                    this.$Message.error('修改失败')
+                }
+            })
+        },
+        cancel () {
+            this.$Message.info('取消修改');
+        },
+        change(item){
+            this.model2 = true;
+            this.newNo = item.no;
+            this.newTitle = item.title;
+            this.changeId = item.id;
+            this.oldTitel = item.title;
+            this.oldNo = item.no;
+        },
+        delete(id){
+            this.GLOBAL.tokenRequest({
+                method:'delete',
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/paper/'+id
+            }).then(({data:data})=>{
+                if (data == '') {
+                    this.$Message.success('试卷删除成功')
+                    this.selectDif(this.model1)
+                }
+            })
+        },
         show(id){//试卷
             this.$router.push({path:'/pi',query:{id,is:0}})
         },

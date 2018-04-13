@@ -27,12 +27,13 @@
                             </Select>
                         </div>
                         <Row class='fl margin-right-10'>
-                            <Input v-model="searchConName" icon="search" @on-click='search' placeholder="关键词，标题" style="width: 200px" />
+                            <Input v-model="searchConName" icon="search" @on-enter='search' @on-click='search' placeholder="编号，标题" style="width: 200px" />
                         </Row>
 
                     </div>
                     <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
                         <Table border :columns="orderColumns" :data="orderData"></Table>
+                        <!-- <Spin size="large" fix v-if =canShow></Spin> -->
                     </Row>
                     <Modal
                         v-model="modal1"
@@ -114,6 +115,7 @@ export default {
     },
     data () {
         return {
+            canShow:true,
             orderColumns: [
                 {
                     type: 'index',
@@ -123,11 +125,27 @@ export default {
                 {
                     title: '题目',
                     key: 'title',
+                    align: 'center',
+                    render:(h,params)=>{
+                        return h('div',{
+                            style: {
+                                display: 'flex'
+                            },
+                            domProps: {
+                                     innerHTML: params.row.title
+                                },
+                        })
+                    }
+                },
+                {
+                    title: '编号',
+                    key: 'no',
                     align: 'center'
                 },
                 {
                     title: '难度',
                     key: 'difficulty',
+                    width:100,
                     align: 'center'
                 },
                 {
@@ -195,7 +213,6 @@ export default {
             pay_type:['选择题','填空题','判断题','简答题'],
             option:'',//对应当前题型参数
             type:this.$route.query.path,
-
             // 修改
             modal1:false,
 
@@ -344,28 +361,35 @@ export default {
             })
         },
         getList(){
+            let param = {
+                page:this.current,
+                page_count:this.pageSize,
+            }
+            if (this.$route.query.path !='0') {
+                param.type = this.$route.query.path;
+            }
             this.GLOBAL.tokenRequest({
                 baseURL:this.GLOBAL.PORER_URL,
                 url:'api/question',
-                param:{
-                    type:this.$route.query.path,
-                    page:this.current,
-                    page_count:this.pageSize,
-                }
+                param,
             }).then(({data:data})=>{
-                 this.$store.commit('setList', data);
+                this.canShow = false;
+                this.$store.commit('setList', data);
             })
         },
         getOptionList(){
-            this.GLOBAL.tokenRequest({//根据选择的题型拉数据
-                baseURL:this.GLOBAL.PORER_URL,
-                url:'api/question',
-                param:{
-                    type:this.$route.query.path,
+            let param = {
                     page:this.current,
                     page_count:this.pageSize,
                     option:this.option,
                 }
+                if (this.$route.query.path !='0') {
+                    param.type = this.$route.query.path;
+                }
+            this.GLOBAL.tokenRequest({//根据选择的题型拉数据
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/question',
+                param,
             }).then(({data:data})=>{
                  this.$store.commit('setList', data);
             })
@@ -398,16 +422,19 @@ export default {
             }
         },
         search(){
-            this.GLOBAL.tokenRequest({//根据选择的题型拉数据
-                baseURL:this.GLOBAL.PORER_URL,
-                url:'api/question',
-                param:{
-                    type:this.$route.query.path,
+            let param = {
                     page:this.current,
                     page_count:this.pageSize,
                     option:this.option,
                     keyword:this.searchConName
                 }
+                if (this.$route.query.path  !='0') {
+                    param.type = this.$route.query.path
+                }
+            this.GLOBAL.tokenRequest({//根据选择的题型拉数据
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/question',
+                param,
             }).then(({data:data})=>{
                  this.$store.commit('setList', data);
             })
@@ -420,16 +447,20 @@ export default {
         // }else{
         //     this.getList()
         // }
-        this.GLOBAL.tokenRequest({
-            baseURL:this.GLOBAL.PORER_URL,
-            url:'api/question',
-            param:{
-                type:this.$route.query.path,
+        let param = {
                 page:1,
                 page_count:15
             }
+            if (this.$route.query.path !='0') {
+                param.type = this.$route.query.path
+            }
+        this.GLOBAL.tokenRequest({
+            baseURL:this.GLOBAL.PORER_URL,
+            url:'api/question',
+            param,
         }).then(({data:data})=>{
             // console.log(data);
+            this.canShow = false;
             this.$store.commit('setList', data);
         })
         this.orderData = this.list.data;

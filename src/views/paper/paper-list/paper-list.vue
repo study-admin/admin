@@ -17,10 +17,10 @@
                             <Option v-for="item in menuList" :value="item.name" :key="item.id">{{ item.name}}</Option>
                         </Select>
                         <Row class='fl margin-right-10'>
-                            <Input v-model="searchConName" icon="search" @on-enter='search' @on-click='search' placeholder="关键词／标题" style="width: 200px" />
+                            <Input v-model="searchConName" icon="search" @on-enter='search' @on-click='search' placeholder="编号／标题" style="width: 200px" />
                         </Row>
                     </div>
-                    <div v-if="model1">
+                    <div>
                         <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
                             <Table border :columns="orderColumns" :data="orderData"></Table>
                         </Row>
@@ -28,9 +28,9 @@
                             <Page :total=total class="fr padding-top-10" @on-change='changePage'></Page>
                         </div>
                     </div>
-                    <div v-else style="text-align:center; font-size:26px;">
+                    <!-- <div v-else style="text-align:center; font-size:26px;">
                         选择类别展示对应试卷
-                    </div>
+                    </div> -->
                 </Card>
                 <Modal
                     v-model="model2"
@@ -67,7 +67,17 @@ export default {
                 {
                     title: '试卷标题',
                     key: 'title',
-                    align: 'center'
+                    align: 'center',
+                    render:(h,params)=>{
+                        return h('div',{
+                            style: {
+                                display: 'flex'
+                            },
+                            domProps: {
+                                     innerHTML: params.row.title
+                                },
+                        })
+                    }
                 },
                 {
                     title: '生成时间',
@@ -289,7 +299,7 @@ export default {
         }).then(({data:data})=>{
             console.log(data.data);
             this.menuList = data.data;
-            this.model1 = data.data[0].name
+            // this.model1 = data.data[0].name
         })
     }
 };

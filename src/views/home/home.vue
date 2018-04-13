@@ -5,7 +5,7 @@
         width: 200px !important;
     }
     .ivu-menu-item-group-title{
-        background-color: #3b6f79;
+        background-color: #186171;
         font-size:22px !important;
         color:#fff !important;
     }
@@ -30,22 +30,24 @@
         position: absolute;
         right:5px;
         top:0;
+        color:#676767;
         font-size:15px;
     }
     .del{
         position: absolute;
-        top:18px;
-        right:5px;
+        top:16px;
+        right:12px;
         margin-left:50px;
-        padding:0 20px;
-        background: red;
-        border-radius: 5px;
-    }
-    .del:hover{
-        color:#fff;
+        // padding:0 20px;
+        font-size:12px;
+        color:#676767;
+        border-radius: 50%;
     }
     .home-main-b{
         padding-top:50px;
+    }
+    .ivu-menu-item:hover{
+        background-color: #2d8cf0 !important;
     }
 </style>
 <template>
@@ -58,8 +60,15 @@
                         </MenuItem>
                         <h4 class="inde2 add" @click = "add" style="line-height:50px;height:50px;padding-left:24px;">试题分类</h4>
                         <MenuItem :name="item.id" v-for="(item,index) in menuList">
-                                <span>{{item.name}}</span><span @click="delItem(item.id)" class="del" v-if= item.id >删除</span>
+                                <span>{{item.name}}</span><span @click="delItem(item.id)" class="del" v-if= item.id >-删除</span>
                         </MenuItem>
+                        <Modal
+                            v-model="modal5"
+                            title="Common Modal dialog box title"
+                            @on-ok="okDel"
+                            @on-cancel="cancelDel">
+                            <p>删除该类别，此类下的题目将移动到‘全部’分类，请谨慎操作</p>
+                        </Modal>
                 </MenuGroup>
                 <MenuGroup title="试卷管理">
                         <MenuItem name="2">
@@ -111,6 +120,8 @@ export default {
     },
     data () {
         return {
+            delID:'',
+            modal5:false,
             addVal:'',
             isShow:false,
             theme3: 'dark',
@@ -125,11 +136,14 @@ export default {
         }
     },
     methods: {
-        delItem(id){
+        cancelDel(){
+            this.$Message.info('取消删除');
+        },
+        okDel(){
             this.GLOBAL.tokenRequest({
                 method:'delete',
                 baseURL:this.GLOBAL.PORER_URL,
-                url:'api/type/'+id
+                url:'api/type/'+this.delID
             }).then(({data:data})=>{
                 if (data=='') {
                     this.$Message.success('删除成功')
@@ -144,13 +158,17 @@ export default {
                             id:0,
                             name:"全部",
                         })
-                        console.log(this.menuList);
+                        console.log('asasa',this.menuList);
                         
                     })
                 }else{
                     this.$Message.error('删除失败')
                 }
             })
+        },
+        delItem(id){
+            this.modal5 = true;
+            this.delID = id
         },
         btn(val){ //点击左侧菜单栏
             this.$router.push({
@@ -225,6 +243,8 @@ export default {
                             id:0,
                             name:"全部",
                         })
+            console.log('asasas',this.menuList);
+                        
         })
     }
 };

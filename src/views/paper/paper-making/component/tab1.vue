@@ -48,11 +48,11 @@
                 <Select v-model="model2" style="width:200px" @on-change="getOp" class='margin-right-10'>
                     <Option v-for="item in cityList2" :value="item" :key="item">{{ item }}</Option>
                 </Select> 
+                <Input v-model="searchConName" icon="search" @on-enter='screenOrder' @on-click="screenOrder" placeholder="编号／标题" style="width: 200px" />
                 <span>此页面自动保存，勾选即添加，取消勾选即撤销</span>
                 <!-- <Select v-model="model3" style="width:200px" @on-change="getList">
                     <Option v-for="item in cityList3" :value="item" :key="item">{{ item }}</Option>
                 </Select> -->
-                <!-- <Input v-model="searchConName" icon="search" @on-click="screenOrder" placeholder="搜索..." style="width: 200px" /> -->
             </div>
             <div class="clearfix">
                 <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
@@ -71,7 +71,7 @@
                     <Table border :columns="orderColumns1" :data="choiceData"></Table>
                 </Row>
             </div>
-            <div v-if="!$route.query.pid" style="margin-bottom:20px;margin-top:30px;">
+            <div style="margin-bottom:20px;margin-top:30px;">
                 <!-- <Row class="margin-top-10 searchable-table-con1" justify="center" align="middle">
                     <Table border :columns="orderColumnsT" :data="orderDataT"></Table>
                 </Row> -->
@@ -134,7 +134,17 @@ export default {
                 {
                     title: '题目',
                     key: 'title',
-                    align: 'center'
+                    align: 'center',
+                    render:(h,params)=>{
+                        return h('div',{
+                            style: {
+                                display: 'flex'
+                            },
+                            domProps: {
+                                 innerHTML: params.row.title
+                            },
+                        })
+                    }
                 },
                 {
                     title: '难度',
@@ -177,6 +187,18 @@ export default {
                     title: '题目',
                     key: 'title',
                     align: 'center'
+                },
+                {
+                    title: '类型',
+                    key: 'option',
+                    align: 'center',
+                    render:(h,params)=>{
+                        return h('div',{
+                            domProps: {
+                                     innerHTML: params.row.option=='choice'?'选择题':params.row.option=='check'?'判断题':params.row.option=='blank'?'填空题':params.row.option=='answer'?'简答题':'默认'
+                                },
+                        })
+                    }
                 },
                 {
                     title: '难度',
@@ -225,7 +247,20 @@ export default {
     },
     methods:{
         screenOrder(){ //点击搜索
-
+            let type = this.cityList.data.filter((item)=>item.name==this.model1)[0].id
+            this.GLOBAL.tokenRequest({
+                baseURL:this.GLOBAL.PORER_URL,
+                url:'api/question',
+                param:{
+                    type,
+                    page_count:10,
+                    keyword:this.searchConName
+                }
+            }).then(({data:data})=>{
+                console.log(data);
+                this.orderData = data.data;
+                this.total = data.meta.pagination.total;
+            })
         },
         getTotalScore(){
             let difficulty =0;
@@ -450,9 +485,18 @@ export default {
                 baseURL:this.GLOBAL.PORER_URL,
                 url:'api/paper/'+this.ID,
             }).then(({data:data})=>{
-                console.log(data);
+                console.log('asdas',data);
                 this.titleName = data.title;
                 this.titleID = data.no
+                
+                this.orderDataT[0].difficulty = data.question.filter(item => item.option=='choice').length;
+                this.orderDataT[1].difficulty = data.question.filter(item => item.option=='blank').length;
+                this.orderDataT[2].difficulty = data.question.filter(item => item.option=='check').length;
+                this.orderDataT[3].difficulty = data.question.filter(item => item.option=='answer').length;
+                this.orderDataT[0].score = data.choiceVal;
+                this.orderDataT[1].score = data.blankVal;
+                this.orderDataT[2].score = data.checkVal;
+                this.orderDataT[3].score = data.answerVal;
             })
         }
         this.GLOBAL.tokenRequest({

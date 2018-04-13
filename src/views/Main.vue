@@ -57,7 +57,7 @@
 										<DropdownItem name="loginout" divided>退出登录</DropdownItem>
 									</DropdownMenu>
 								</Dropdown>
-								<Avatar :src="avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
+								<Avatar src="https://rnty.oss-cn-hongkong.aliyuncs.com/images/headImg/default_family.jpg" style="background: #619fe7;margin-left: 10px;"></Avatar>
 							</Row>
 						</div>
 					</div>

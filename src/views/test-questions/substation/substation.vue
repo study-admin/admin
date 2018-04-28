@@ -53,52 +53,18 @@
                                     <Option v-for="item in cityList3" :value="item" :key="item">{{ item }}</Option>
                                 </Select>
                             </div>
-                            <!-- <div class="clearfix padding-top-10">
-                                <span class="fl complimentary-t margin-right-10">试题内容</span>
-                                <div class="fl paper_main" style='width:650px;'>
-                                    <div ref="editor" style="text-align:left"></div>
-                                </div>
-                            </div> -->
-                            <!-- <div class="clearfix">
-                                <span class="fl complimentary-t margin-right-10">试题答案：</span>
-                                <div class="fl" style='width:650px;' v-if='value2 == "选择题"'>
-                                    <div class="choose"  v-for="(item,index) in len" :key="item" style="padding: 5px 0">
-                                        <div :ref="'editor'+item" style="text-align:left"></div>
-                                        {{item}}
-                                        <Input v-model="answer[index]" placeholder="输入选项" style="width: 400px" size="large"></Input>
-                                        <VueImgInputer class="margin-left-10" :v-model="'picValue'+item" theme="light" size="large"></VueImgInputer>
-                                        <Checkbox class="is_true" v-model="single[index]">是否正确</Checkbox>
-                                    </div>
-                                    <Button long @click="addItem" class="margin-top-20">添加选项</Button>
-                                </div>
-                                <div class="fl" style='width:650px;' v-if='value2 == "判断题"'>
-                                    <radio-group v-model="disabledGroup" vertical>
-                                        <radio label="是"></radio>
-                                        <radio label="否"></radio>
-                                    </radio-group>
-                                </div>
-                                <div class="fl" style='width:650px;' v-if='value2 == "填空题"'>
-                                     <button v-on:click="getContent">查看内容</button>
-                                    <Button @click="addD">点击生成答案</Button>
-                                    <div>
-
-                                        <div class="choose"  v-for="(item,index) in lengths" :key="item" style="padding: 5px 0">
-                                            <Input v-model="answerT[index]" style="width: 400px" size="large"></Input>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="fl" style='width:650px;' v-if='value2 == "简答题"'>
-                                    <div class="padding-top-10">
-                                        <Input v-model="text1" type="textarea" :rows="4" placeholder=""></Input>
-                                    </div>
-                                </div>
-                            </div> -->
                         </div>
                     </Modal>
                     <div class="clearfix" style="height:80px;">
                        <Page :total=total class="fr padding-top-10" @on-change='changePage'></Page>
                     </div>
+                    <Modal
+                        v-model="modal8"
+                        title="删除试题"
+                        @on-ok="okDel"
+                        @on-cancel="cancelDel">
+                        <p>确定删除该试题吗</p>
+                    </Modal>
                 </Card>
             </Col>
         </Row>
@@ -115,6 +81,7 @@ export default {
     },
     data () {
         return {
+            modal8:false,
             canShow:true,
             orderColumns: [
                 {
@@ -126,10 +93,13 @@ export default {
                     title: '题目',
                     key: 'title',
                     align: 'center',
+                    width:300,
                     render:(h,params)=>{
                         return h('div',{
                             style: {
-                                display: 'flex'
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
                             },
                             domProps: {
                                      innerHTML: params.row.title
@@ -158,6 +128,7 @@ export default {
                     title: '操作',
                     key: 'operation',
                     align: 'center',
+                    width:200,
                     render: (h, params) => {
                             return h('div', [
                                 h('Button', {
@@ -243,6 +214,7 @@ export default {
             text1:'',
             changeId:'',
             no:'',
+            removeID:''
         };
     },
     watch:{
@@ -273,13 +245,13 @@ export default {
             console.log(this.value3);
             switch (this.value3) {
                 case '简单':
-                    difficulty = 0
-                    break;
-                case '中等':
                     difficulty = 1
                     break;
-                case '难':
+                case '中等':
                     difficulty = 2
+                    break;
+                case '难':
+                    difficulty = 3
                     break;
                 default:
                     break;
@@ -350,15 +322,21 @@ export default {
             this.lengths++ ;
         },
         remove(id){
-            console.log(id);
+            this.modal8 = true;
+            this.removeID = id;
+        },
+        okDel(){
             this.GLOBAL.tokenRequest({
                 method:'delete',
                 baseURL:this.GLOBAL.PORER_URL,
-                url:'api/question/'+id
+                url:'api/question/'+this.removeID
             }).then(({data:data})=>{
                 this.$Message.success('删除成功');
                 this.getList()
             })
+        },
+        cancelDel(){
+            this.$Message.error('取消删除');
         },
         getList(){
             let param = {
@@ -442,11 +420,6 @@ export default {
     },
     mounted(){
         this.model1 = '';
-        // if (this.option !='') {
-        //     this.getOptionList();
-        // }else{
-        //     this.getList()
-        // }
         let param = {
                 page:1,
                 page_count:15
@@ -464,33 +437,7 @@ export default {
             this.$store.commit('setList', data);
         })
         this.orderData = this.list.data;
-        //初始化付文本
-        // this.editor = new E(this.$refs.editor)
-        // this.editor.customConfig.onchange = (html) => {
-        //     this.editorContent = html
-        // }
-        // this.editor.customConfig.menus = [
-        //     'head',  // 标题
-        //     'bold',  // 粗体
-        //     'fontSize',  // 字号
-        //     'fontName',  // 字体
-        //     'italic',  // 斜体
-        //     'underline',  // 下划线
-        //     'strikeThrough',  // 删除线
-        //     'foreColor',  // 文字颜色
-        //     'backColor',  // 背景颜色
-        //     'link',  // 插入链接
-        //     'list',  // 列表
-        //     'justify',  // 对齐方式
-        //     'emoticon',  // 表情
-        //     'image',  // 插入图片
-        //     'table',  // 表格
-        //     'undo',  // 撤销
-        //     'redo'  // 重复
-        // ]
-        // this.editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-        // this.editor.create()
-        
     }
 };
 </script>
+

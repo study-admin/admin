@@ -29,7 +29,7 @@
         <div class="margin-bottom-10 clearfix">
             <h3 class="fl" style='padding-top:5px;'>试题标题：</h3>
             <Input v-model="titleName" placeholder="输入试卷标题..." style="width: 300px"></Input>
-            <Select v-model="model1" style="width:200px" @on-change="getList" class='margin-right-10'>
+            <Select v-if="!ID" v-model="model1" style="width:200px" @on-change="getList" class='margin-right-10'>
                 <Option v-for="item in cityList.data" :value="item.name" :key="item.id">{{ item.name }}</Option>
             </Select>
         </div>
@@ -45,6 +45,9 @@
                 <!-- <Select v-model="model1" style="width:200px" @on-change="getList" class='margin-right-10'>
                     <Option v-for="item in cityList.data" :value="item.name" :key="item.id">{{ item.name }}</Option>
                 </Select>-->
+                <Select v-model="model1" style="width:200px" @on-change="getList" class='margin-right-10'>
+                    <Option v-for="item in cityList.data" :value="item.name" :key="item.id">{{ item.name }}</Option>
+                </Select>
                 <Select v-model="model2" style="width:200px" @on-change="getOp" class='margin-right-10'>
                     <Option v-for="item in cityList2" :value="item" :key="item">{{ item }}</Option>
                 </Select> 
@@ -138,11 +141,13 @@ export default {
                     render:(h,params)=>{
                         return h('div',{
                             style: {
-                                display: 'flex'
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
                             },
                             domProps: {
-                                 innerHTML: params.row.title
-                            },
+                                     innerHTML: params.row.title
+                                },
                         })
                     }
                 },
@@ -167,7 +172,6 @@ export default {
                                     },
                                     on: {
                                         'on-change': (val) => {
-                                            console.log(params)
                                             this.show(params.row,val)
                                         }
                                     }
@@ -186,7 +190,19 @@ export default {
                 {
                     title: '题目',
                     key: 'title',
-                    align: 'center'
+                    align: 'center',
+                    render:(h,params)=>{
+                        return h('div',{
+                            style: {
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
+                            },
+                            domProps: {
+                                     innerHTML: params.row.title
+                                },
+                        })
+                    }
                 },
                 {
                     title: '类型',
@@ -505,6 +521,10 @@ export default {
         }).then(({data:data})=>{
             console.log(data);
             this.cityList = data;
+            data.data.unshift({
+                name:'全部',
+                id:0
+            })
             this.model1 = this.cityList.data[0].name
             this.getListID(this.model1);
             this.getData();

@@ -7,7 +7,7 @@
         </div>
         <div class="margin-bottom-10 clearfix">
             <h3 class="fl" style='padding-top:5px;'>试题标题：</h3>
-            <div style="line-height:35px;display:flex;" v-html ="list.title"></div>
+            <div class="init_" style="line-height:35px;" v-html ="list.title"></div>
         </div>
         <div class="margin-bottom-10 clearfix">
             <h3 class="fl" style='padding-top:5px;'>试题类型：</h3>
@@ -59,6 +59,9 @@ export default {
 a{
     display: flex;
     ;justify-content: flex-start
+}
+.init_ p, .init_ div{
+    display: inline;
 }
 </style>
 

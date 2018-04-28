@@ -118,7 +118,7 @@ export default {
                     score:0,
                     val:'choiceVal',
                     diffVal:'简单',
-                    dif:0
+                    dif:1
                 },
                 {
                     goodsNo: '填空题',
@@ -126,7 +126,7 @@ export default {
                     score:0,
                     val:'blankVal',
                     diffVal:'简单',
-                    dif:0
+                    dif:1
                 },
                 {
                     goodsNo: '判断题',
@@ -134,7 +134,7 @@ export default {
                     score:0,
                     val:'checkVal',
                     diffVal:'简单',
-                    dif:0
+                    dif:1
                 },
                 {
                     goodsNo: '简答题',
@@ -142,7 +142,7 @@ export default {
                     score:0,
                     val:'answerVal',
                     diffVal:'简单',
-                    dif:0
+                    dif:1
                 },
             ],
             //抽题结果
@@ -155,7 +155,19 @@ export default {
                 {
                     title: '题目',
                     key: 'title',
-                    align: 'center'
+                    align: 'center',
+                    render:(h,params)=>{
+                        return h('div',{
+                            style: {
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
+                            },
+                            domProps: {
+                                     innerHTML: params.row.title
+                                },
+                        })
+                    }
                 },
                 {
                     title: '题型',
@@ -194,13 +206,13 @@ export default {
             let dif = '';
             switch (val) {
                 case '简单':
-                    dif = 0
-                    break;
-                case '中等':
                     dif = 1
                     break;
-                case '困难':
+                case '中等':
                     dif = 2
+                    break;
+                case '困难':
+                    dif = 3
                     break;
                 default:
                     break;
@@ -240,8 +252,8 @@ export default {
                     no:this.titleID,
                     options:JSON.stringify({
                         "choice": {"num":this.orderData[0].difficulty,"labe":this.orderData[0].score,"difficulty":this.orderData[0].dif},
-                        "check":{"num":this.orderData[1].difficulty,"labe":this.orderData[1].score,"difficulty":this.orderData[1].dif},
-                        "blank":{"num":this.orderData[2].difficulty,"labe":this.orderData[2].score,"difficulty":this.orderData[2].dif},
+                        "blank":{"num":this.orderData[1].difficulty,"labe":this.orderData[1].score,"difficulty":this.orderData[1].dif},
+                        "check":{"num":this.orderData[2].difficulty,"labe":this.orderData[2].score,"difficulty":this.orderData[2].dif},
                         "answer":{"num":this.orderData[3].difficulty,"labe":this.orderData[3].score,"difficulty":this.orderData[3].dif}
                         })
                 }
@@ -250,7 +262,10 @@ export default {
                     this.ID = data;
                     this.isAuto = true;
                     this.timer = setInterval(()=>this.getOneQuestions(),500)
-                }else if(data.status == 0){
+                }
+                if(data.status == 0){
+                    console.log(123)
+                    alert(data.message)
                     this.$Message.error(data.message)
                 }
             })
@@ -483,13 +498,13 @@ export default {
                             break;
                     }
                     switch (item.difficulty) {
-                        case 0:
+                        case 1:
                             item.difficulty = '简单'
                             break;
-                        case 1:
+                        case 2:
                             item.difficulty = '中等'
                             break;
-                        case 2:
+                        case 3:
                             item.difficulty = '困难'
                             break;
                         default:

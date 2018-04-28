@@ -12,7 +12,7 @@
                     <div v-if="!show">
                         <div class="clearfix title">
                             <span class="fl">{{index+1}}.</span>
-                            <div class="fl" style="display:flex;" v-html="item.title"></div>
+                            <div class="fl containter" style="display:block;" >{{htmlc(item.title)}}</div>
                         </div>
                         <div class="answer_">
                             <span v-for="(it,id) in item.choice" :key="id">{{a[id]}}. {{ it.content}}</span>
@@ -29,14 +29,14 @@
                     <div v-if="!show"> 
                         <div class="title clearfix">
                             <span class="fl">{{index+1}}.</span>
-                            <div class=" fl" style="display:flex;" v-html="item.title"></div>
+                            <div class=" fl containter" style="display:block;">{{htmlc(item.title)}}</div>
                         </div>
                         <div class="answer_">
                             <!-- <span v-for="(it,idx) in item.blank" :key="idx">{{idx+1}}.{{ show?it.answer:'_______'}}</span> -->
                         </div>
                     </div>
-                    <div v-else class="answer_"> 
-                        <span v-for="(it,idx) in item.blank" :key="idx">{{idx+1}}.{{ it.answer}}</span>
+                    <div v-else class="answer_ clearfix"> 
+                        <div class="fl" style="margin-right:5px;">{{index+1}}.</div><span class="fl nom" v-for="(it,idx) in item.blank" :key="idx">{{ it.answer}}，</span>
                     </div>
                 </li>
             </ul>
@@ -45,8 +45,8 @@
                 <li class="check" v-for="(item,index) in check" :key='index'>
                     <div v-if="!show">
                         <div class="title clearfix">
-                            <span class="fl">{{index+1}}.( )</span>
-                            <div class="fl" style="display:flex;"  v-html="item.title"></div>
+                            <span class="fl">{{index+1}}.</span>
+                            <div class="fl containter" style="display:block;">{{htmlc(item.title)}}</div>
                         </div>
                         <div class="answer_">
                             <!-- <span :class = {red:item.check[0].answer}>是</span><span>否</span> -->
@@ -60,11 +60,11 @@
             <h2 v-if="answer.length">4.简答题  ({{answer.length}} x {{list.answerVal}}分 = {{answer.length*list.answerVal}}分)</h2>
             <ul>
                 <li class="answer" v-for="(item,index) in answer" :key='index'>
-                    <div class="title clearfix">
+                    <div class="title clearfix" v-if="!show" >
                         <span class="fl">{{index+1}}.</span>
-                        <div class=" fl" style="display:flex;"  v-if="!show" v-html="item.title"></div>
+                        <div class=" fl containter" style="display:block;">{{htmlc(item.title)}}</div>
                     </div>
-                    <div class="answer_" style="display:flex;"  v-html="show?index+1+'. '+item.answer[0].content:''"> </div>
+                    <div class="answer_ containter" style="display:block;" >{{htmlc(show?index+1+'. '+item.answer[0].content:'')}} </div>
                 </li>
             </ul>
         </div>
@@ -88,6 +88,16 @@ export default {
       }
   },
   methods:{
+      htmlc(test){  
+            test = test.replace(/(\n)/g, "");  
+            test = test.replace(/(\t)/g, "");  
+            test = test.replace(/(\r)/g, "");  
+            test = test.replace(/<\/?[^>]*>/g, "");  
+            test = test.replace(/\s*/g, ""); 
+            test = test.replace(/\&nbsp;/g,"_");
+            test = test.split("p.p1{margin:0.0px0.0px0.0px0.0px;line-height:19.0px;font:13.0px'HelveticaNeue'}").join("")
+            return  test;  
+        },
       initList(){
           this.choice = this.quse.filter(item=>item.option == "choice")
           this.blank = this.quse.filter(item=>item.option == 'blank')
@@ -158,6 +168,17 @@ export default {
 <style scoped>
 .body{
     /* overflow: auto; */
+}
+.fl{
+    float: left;
+}
+.clearfix::after{
+    content:'';
+    display: block;
+    clear: both;
+}
+.nom{
+    margin-right:10px !important;
 }
 .pi_wraper{
     padding:50px 80px;

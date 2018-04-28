@@ -49,6 +49,10 @@
     .ivu-menu-item:hover{
         background-color: #2d8cf0 !important;
     }
+    
+    .ivu-table-cell p, .ivu-table-cell div{
+        display: inline;
+    }
 </style>
 <template>
     <div class="home-main clearfix">
@@ -62,13 +66,6 @@
                         <MenuItem :name="item.id" v-for="(item,index) in menuList">
                                 <span>{{item.name}}</span><span @click="delItem(item.id)" class="del" v-if= item.id >-删除</span>
                         </MenuItem>
-                        <Modal
-                            v-model="modal5"
-                            title="Common Modal dialog box title"
-                            @on-ok="okDel"
-                            @on-cancel="cancelDel">
-                            <p>删除该类别，此类下的题目将移动到‘全部’分类，请谨慎操作</p>
-                        </Modal>
                 </MenuGroup>
                 <MenuGroup title="试卷管理">
                         <MenuItem name="2">
@@ -79,6 +76,13 @@
                         </MenuItem>
                 </MenuGroup>
             </Menu>
+            <Modal
+                v-model="modal5"
+                title="删除类别"
+                @on-ok="okDel"
+                @on-cancel="cancelDel">
+                <p>删除该类别，此类下的题目将移动到‘全部’分类，请谨慎操作</p>
+            </Modal>
             <Modal
                 v-model="isShow"
                 title="请输入分类名称"
@@ -158,7 +162,7 @@ export default {
                             id:0,
                             name:"全部",
                         })
-                        console.log('asasa',this.menuList);
+                        // console.log('asasa',this.menuList);
                         
                     })
                 }else{
@@ -230,7 +234,7 @@ export default {
         }
     },
     mounted(){
-        console.log(this.$route.query.path)
+        // console.log(this.$route.query.path)
         this.num= this.$route.query.path;
         this.GLOBAL.tokenRequest({
             baseURL:this.GLOBAL.PORER_URL,
@@ -243,8 +247,7 @@ export default {
                             id:0,
                             name:"全部",
                         })
-            console.log('asasas',this.menuList);
-                        
+            console.log('asasas',this.menuList);     
         })
     }
 };

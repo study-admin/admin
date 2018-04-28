@@ -40,6 +40,13 @@
                     <h3>修改标题<Input v-model="newTitle"></Input></h3>
                     <h3>修改编号<Input v-model="newNo"></Input></h3>                    
                 </Modal>
+                <Modal
+                    v-model="modal5"
+                    title="删除试卷"
+                    @on-ok="okDel"
+                    @on-cancel="cancelDel">
+                    <p>删除后该试卷将彻底消失，请谨慎操作</p>
+                </Modal>
             </Col>
         </Row>
     </div>
@@ -53,6 +60,7 @@ export default {
             model2:false,
             newTitle:'',
             newNo:'',
+            modal5:false,
             orderColumns: [
                 {
                     type: 'index',
@@ -71,7 +79,9 @@ export default {
                     render:(h,params)=>{
                         return h('div',{
                             style: {
-                                display: 'flex'
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
                             },
                             domProps: {
                                      innerHTML: params.row.title
@@ -227,17 +237,25 @@ export default {
             this.oldTitel = item.title;
             this.oldNo = item.no;
         },
-        delete(id){
+        okDel(){
             this.GLOBAL.tokenRequest({
                 method:'delete',
                 baseURL:this.GLOBAL.PORER_URL,
-                url:'api/paper/'+id
+                url:'api/paper/'+this.delId
             }).then(({data:data})=>{
                 if (data == '') {
                     this.$Message.success('试卷删除成功')
                     this.selectDif(this.model1)
+                    this.modal5 = false;
                 }
             })
+        },
+        cancelDel(){
+            this.$Message.error('取消删除')
+        },
+        delete(id){
+            this.modal5 = true;
+            this.delId = id;
         },
         show(id){//试卷
             this.$router.push({path:'/pi',query:{id,is:0}})
@@ -298,8 +316,12 @@ export default {
             url:'api/type',
         }).then(({data:data})=>{
             console.log(data.data);
+            data.data.unshift({
+                id:'',
+                name:'全部'
+            })
             this.menuList = data.data;
-            // this.model1 = data.data[0].name
+            this.model1 = data.data[0].name
         })
     }
 };

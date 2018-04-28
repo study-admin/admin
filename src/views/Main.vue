@@ -7,7 +7,8 @@
 	width:100%;
 	position: fixed;
 	top:0;
-	left:0
+	left:0;
+	z-index:9999;
 }
 .main{
 	padding-top:50px;
@@ -54,7 +55,7 @@
 									<DropdownMenu slot="list">
 										<!-- <DropdownItem name="ownSpace">个人中心</DropdownItem> -->
 
-										<DropdownItem name="loginout" divided>退出登录</DropdownItem>
+										<DropdownItem name="loginout">退出登录</DropdownItem>
 									</DropdownMenu>
 								</Dropdown>
 								<Avatar src="https://rnty.oss-cn-hongkong.aliyuncs.com/images/headImg/default_family.jpg" style="background: #619fe7;margin-left: 10px;"></Avatar>

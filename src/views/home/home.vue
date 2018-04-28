@@ -49,14 +49,14 @@
     .ivu-menu-item:hover{
         background-color: #2d8cf0 !important;
     }
-    
+
     .ivu-table-cell p, .ivu-table-cell div{
         display: inline;
     }
 </style>
 <template>
     <div class="home-main clearfix">
-        <div class="fl home-main-h" style="width:200px;height:100%; background:#fff">
+        <div class="fl home-main-h">
             <Menu :theme="theme3" style="background:#ccc;" :active-name="num" @on-select='btn'>
                 <MenuGroup title="试题管理">
                         <MenuItem name="1">
@@ -163,7 +163,7 @@ export default {
                             name:"全部",
                         })
                         // console.log('asasa',this.menuList);
-                        
+
                     })
                 }else{
                     this.$Message.error('删除失败')
@@ -196,7 +196,7 @@ export default {
                 // console.log(data);
                 this.$store.commit('setList', data);
             })
-            
+
         },
         cancel(){
             this.$Message.info('取消添加')
@@ -247,7 +247,7 @@ export default {
                             id:0,
                             name:"全部",
                         })
-            console.log('asasas',this.menuList);     
+            console.log('asasas',this.menuList);
         })
     }
 };

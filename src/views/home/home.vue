@@ -56,7 +56,7 @@
 </style>
 <template>
     <div class="home-main clearfix">
-        <div class="fl home-main-h">
+        <div class="fl home-main-h" style="padding-bottom:50px;">
             <Menu :theme="theme3" style="background:#ccc;" :active-name="num" @on-select='btn'>
                 <MenuGroup title="试题管理">
                         <MenuItem name="1">

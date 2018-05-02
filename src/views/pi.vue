@@ -2,8 +2,9 @@
     <div  ref="paperpage" class='wew'>
         <!-- <Button v-if="isShow" style="position: fixed; top:50px; right:200px;" @click="getPDF" type="primary">导出</Button> -->
         <div class="pi_wraper">
-        <h1>{{list.title}}</h1>
-        <p style="text-align:center; font:bold 16px/18px '微软雅黑'"><span>单位____________________</span><span>姓名_____________</span><span>成绩__________</span></p>
+        <h1>{{list.title}}{{show?"答案":''}}</h1>
+        <p v-if="!show" style="text-align:center; font:bold 16px/18px '微软雅黑'"><span>单位____________________</span><span>姓名_____________</span><span>成绩__________</span></p>
+        <p v-else style="text-align:center; font:bold 16px/18px '微软雅黑'">试卷编号:{{list.no}}</p>
         <div v-if="!quse.length">该试卷暂无试题</div>
         <div v-if="quse.length">
             <h2 v-if="choice.length">1.选择题 ({{choice.length}} x {{list.choiceVal}}分 = {{choice.length*list.choiceVal}}分)</h2>

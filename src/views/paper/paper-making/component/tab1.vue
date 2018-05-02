@@ -273,7 +273,9 @@ export default {
                     keyword:this.searchConName
                 }
             }).then(({data:data})=>{
-                console.log(data);
+                data.data.forEach(item => {
+                    item.difficulty= item.difficulty ==1?'简单':item.difficulty ==2?'中等':item.difficulty ==3?'困难':'无';
+                });
                 this.orderData = data.data;
                 this.total = data.meta.pagination.total;
             })
@@ -317,8 +319,9 @@ export default {
         },
         beginCheck(){
             if(this.titleName.trim()&&this.titleID.trim()){
-                console.log(this.listID);
-                
+                if (!this.listID) {
+                    return
+                }
                 this.GLOBAL.tokenRequest({
                     method:'post',
                     baseURL:this.GLOBAL.PORER_URL,

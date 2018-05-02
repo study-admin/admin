@@ -172,6 +172,7 @@ export default {
                 option:'',
                 options:''
             }
+            return;
            switch(this.model2)
             {
             case '选择题':
